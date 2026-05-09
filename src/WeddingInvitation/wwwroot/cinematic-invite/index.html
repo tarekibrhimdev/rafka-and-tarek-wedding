@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#ebe4d6" />
+    <meta name="description" content="A luxury cinematic wedding invitation — an immersive story experience." />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>Wedding — Cinematic Invitation</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
+    <link rel="apple-touch-icon" href="./icons/icon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./vendor/swiper/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link rel="stylesheet" href="./css/animations.css" />
+</head>
+<body>
+    <div id="cin-loader" class="cin-loader" aria-busy="true" aria-live="polite">
+        <div class="cin-loader__inner">
+            <p class="cin-loader__mark">Gathering light</p>
+            <div class="cin-loader__line" aria-hidden="true"></div>
+        </div>
+    </div>
+
+    <div class="cin-stage-wrap">
+        <div class="cin-shell" id="cin-shell">
+            <div class="cin-progress-host" aria-hidden="true">
+                <div class="cin-progress" id="cin-progress"></div>
+            </div>
+
+            <button type="button" class="cin-audio-btn" id="cin-audio-btn" aria-label="Toggle ambient music" aria-pressed="true" title="Sound">
+                <svg class="cin-audio-btn__on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                    <path d="M11 5L6 9H2v6h4l5 4V5zM19 9a7 7 0 010 6M22 7a11 11 0 010 10" stroke-linecap="round" />
+                </svg>
+                <svg class="cin-audio-btn__off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                    <path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6" stroke-linecap="round" />
+                </svg>
+            </button>
+
+            <div class="swiper cin-main-swiper" id="cin-main-swiper" aria-roledescription="carousel" aria-label="Wedding story chapters">
+                <div class="swiper-wrapper">
+                    <!-- 1 · Opening -->
+                    <div class="swiper-slide" data-scene="opening" data-progress-label="Welcome">
+                        <div class="cin-slide__media">
+                            <img class="cin-slide__fill-img" src="images/hero-opening.png" alt="" loading="eager" fetchpriority="high" decoding="async" />
+                        </div>
+                        <div class="cin-slide__veil"></div>
+                        <div class="cin-slide__grain" aria-hidden="true"></div>
+                        <div class="cin-slide__inner cin-slide__inner--center">
+                            <h1 class="cin-display-xl" data-animate style="margin-top: 0">Rafka<br /><span style="font-style: italic; font-size: 0.45em; opacity: 0.9">&amp;</span> Tarek</h1>
+                            <p class="cin-hero-date" data-animate>June 27 · 2026</p>
+                            <p class="cin-swipe-begin" data-animate>Swipe to begin</p>
+                        </div>
+                    </div>
+
+                    <!-- 2 · Our story -->
+                    <div class="swiper-slide" data-scene="story" data-progress-label="Story">
+                        <div class="cin-slide__media">
+                            <img class="cin-slide__fill-img" src="images/story-ring.png" alt="" loading="lazy" decoding="async" />
+                        </div>
+                        <div class="cin-slide__veil cin-slide__veil--soft"></div>
+                        <div class="cin-slide__grain" aria-hidden="true"></div>
+                        <div class="cin-slide__inner cin-slide__inner--center">
+                            <p class="cin-eyebrow" data-animate>Our story</p>
+                            <h2 class="cin-display-md cin-story-lead" data-animate>Every chapter led us here — quiet rooms, loud joy, and the ease of home in each other.</h2>
+                            <div class="cin-divider" data-animate aria-hidden="true"></div>
+                            <div class="cin-timeline" data-animate-group>
+                                <div class="cin-timeline__item" data-animate-child>
+                                    <span class="cin-timeline__year">2023</span>
+                                    <div>
+                                        <p class="cin-caption">The first gaze</p>
+                                        <p class="cin-body" style="margin-top: 0.35rem">A winter night when time seemed to stand still.</p>
+                                    </div>
+                                </div>
+                                <div class="cin-timeline__item" data-animate-child>
+                                    <span class="cin-timeline__year">2024</span>
+                                    <div>
+                                        <p class="cin-caption">The best of times</p>
+                                        <p class="cin-body" style="margin-top: 0.35rem">We were in a relationship, having the best time of our lives.</p>
+                                    </div>
+                                </div>
+                                <div class="cin-timeline__item" data-animate-child>
+                                    <span class="cin-timeline__year">2025</span>
+                                    <div>
+                                        <p class="cin-caption">Engaged</p>
+                                        <p class="cin-body" style="margin-top: 0.35rem">I proposed — and we got engaged.</p>
+                                    </div>
+                                </div>
+                                <div class="cin-timeline__item" data-animate-child>
+                                    <span class="cin-timeline__year">2026</span>
+                                    <div>
+                                        <p class="cin-caption">The wedding</p>
+                                        <p class="cin-body" style="margin-top: 0.35rem">2026 — our wedding day, and forever yes.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3 · Proposal -->
+                    <div class="swiper-slide" data-scene="proposal" data-progress-label="Proposal">
+                        <div class="cin-slide__media">
+                            <img class="cin-slide__fill-img" src="images/proposal-joined-bw.png" alt="" loading="lazy" decoding="async" />
+                        </div>
+                        <div class="cin-slide__veil cin-slide__veil--minimal"></div>
+                        <div class="cin-slide__grain" aria-hidden="true"></div>
+                        <div class="cin-slide__inner cin-slide__inner--bottom">
+                            <p class="cin-display-lg cin-proposal-verse" data-animate style="margin-top: 0; max-width: 19rem; margin-left: auto; margin-right: auto; text-align: center">What God has joined together, let no one separate. Mark 10:9</p>
+                        </div>
+                    </div>
+
+                    <!-- 4 · Details -->
+                    <div class="swiper-slide" data-scene="details" data-progress-label="Details">
+                        <div class="cin-slide__media">
+                            <img class="cin-slide__fill-img" src="images/celebration-landscape.png" alt="" loading="lazy" decoding="async" />
+                        </div>
+                        <div class="cin-slide__veil"></div>
+                        <div class="cin-slide__grain" aria-hidden="true"></div>
+                        <div class="cin-slide__inner cin-slide__inner--stack cin-slide__inner--details">
+                            <p class="cin-eyebrow" data-animate style="text-align: center">The celebration</p>
+                            <p class="cin-details-date" data-animate>Saturday, June 27, 2026</p>
+                            <div class="cin-event-cards" data-animate-group>
+                                <article class="cin-event-card" data-animate-child>
+                                    <div class="cin-event-card__icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.45"><path d="M4 21h16M6 21V10.5l6-4.5 6 4.5V21M9 21v-4h6v4M12 6.5V3M12 3h.01" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                    </div>
+                                    <div class="cin-event-card__body">
+                                        <p class="cin-event-card__kicker">Ceremony</p>
+                                        <p class="cin-event-card__time">6:00 PM</p>
+                                        <p class="cin-event-card__title">Saint Elias Catholic Church</p>
+                                        <p class="cin-event-card__meta">Kherbet Qanafar · Catholic parish</p>
+                                    </div>
+                                </article>
+                                <article class="cin-event-card cin-event-card--party" data-animate-child>
+                                    <div class="cin-event-card__icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.45"><path d="M8 2h8M9 2v6.5c0 2 1.5 3.5 3 3.5s3-1.5 3-3.5V2" stroke-linecap="round" /><path d="M12 12v8M9 22h6" stroke-linecap="round" /><path d="M7.5 8.5h9" stroke-linecap="round" /></svg>
+                                    </div>
+                                    <div class="cin-event-card__body">
+                                        <p class="cin-event-card__kicker">Reception</p>
+                                        <p class="cin-event-card__time">8:00 PM</p>
+                                        <p class="cin-event-card__title">Royal Venue</p>
+                                        <p class="cin-event-card__meta">Kefraya, Lebanon</p>
+                                    </div>
+                                </article>
+                            </div>
+                            <p class="cin-details-attire" data-animate>Formal attire · Evening under the stars</p>
+                        </div>
+                    </div>
+
+                    <!-- 5 · Countdown -->
+                    <div class="swiper-slide" data-scene="countdown" data-progress-label="Countdown">
+                        <div class="cin-slide__media">
+                            <img class="cin-slide__fill-img" src="images/countdown-landscape.png" alt="" loading="lazy" decoding="async" />
+                        </div>
+                        <div class="cin-slide__veil cin-slide__veil--countdown"></div>
+                        <div class="cin-slide__grain" aria-hidden="true"></div>
+                        <div class="cin-slide__inner cin-slide__inner--center">
+                            <p class="cin-eyebrow" data-animate>Counting the moments</p>
+                            <h2 class="cin-display-lg" data-animate style="margin-top: 1rem">Until we say<br />I do</h2>
+                            <div id="cin-countdown-root" class="cin-countdown" data-animate aria-live="polite">
+                                <div class="cin-countdown__unit">
+                                    <span class="cin-countdown__num" data-cd="days">0</span>
+                                    <p class="cin-countdown__lbl">Days</p>
+                                </div>
+                                <div class="cin-countdown__unit">
+                                    <span class="cin-countdown__num" data-cd="hours">0</span>
+                                    <p class="cin-countdown__lbl">Hrs</p>
+                                </div>
+                                <div class="cin-countdown__unit">
+                                    <span class="cin-countdown__num" data-cd="minutes">0</span>
+                                    <p class="cin-countdown__lbl">Min</p>
+                                </div>
+                                <div class="cin-countdown__unit">
+                                    <span class="cin-countdown__num" data-cd="seconds">0</span>
+                                    <p class="cin-countdown__lbl">Sec</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6 · Location -->
+                    <div class="swiper-slide" data-scene="location" data-progress-label="Location">
+                        <div class="cin-slide__media">
+                            <img class="cin-slide__fill-img" src="images/celebration-arch.png" alt="" loading="lazy" decoding="async" />
+                        </div>
+                        <div class="cin-slide__veil"></div>
+                        <div class="cin-slide__grain" aria-hidden="true"></div>
+                        <div class="cin-slide__inner cin-slide__inner--stack">
+                            <p class="cin-eyebrow" data-animate style="text-align: center">Find us</p>
+                            <p class="cin-location-lead cin-body" data-animate style="text-align: center; margin-top: 0.45rem; max-width: 20rem; margin-left: auto; margin-right: auto; line-height: 1.5">Ceremony & reception — Beqaa Valley, Lebanon</p>
+                            <div class="cin-locations">
+                                <article class="cin-location-block" data-animate>
+                                    <p class="cin-location-block__kicker">Ceremony</p>
+                                    <h3 class="cin-location-block__title">Saint Elias Catholic Church</h3>
+                                    <p class="cin-location-block__meta cin-body">Kherbet Qanafar · Lebanon</p>
+                                    <div class="cin-map-frame">
+                                        <iframe
+                                            title="Church location map"
+                                            loading="lazy"
+                                            referrerpolicy="no-referrer-when-downgrade"
+                                            src="https://www.openstreetmap.org/export/embed.html?bbox=35.820%2C33.620%2C35.870%2C33.660&amp;layer=mapnik&amp;marker=33.640%2C35.845"
+                                        ></iframe>
+                                    </div>
+                                    <a class="cin-maps-btn" href="https://www.google.com/maps/search/?api=1&amp;query=Saint+Elias+Catholic+Church+Kherbet+Qanafar+Lebanon" target="_blank" rel="noopener noreferrer">Open in Maps</a>
+                                </article>
+                                <article class="cin-location-block" data-animate>
+                                    <p class="cin-location-block__kicker">Reception</p>
+                                    <h3 class="cin-location-block__title">Royal Venue · Kafrayya</h3>
+                                    <p class="cin-location-block__meta cin-body">Western Beqaa · Kafrayya · Lebanon</p>
+                                    <div class="cin-map-frame">
+                                        <iframe
+                                            title="Reception venue map"
+                                            loading="lazy"
+                                            referrerpolicy="no-referrer-when-downgrade"
+                                            src="https://www.openstreetmap.org/export/embed.html?bbox=35.707%2C33.636%2C35.768%2C33.696&amp;layer=mapnik&amp;marker=33.666088%2C35.737484"
+                                        ></iframe>
+                                    </div>
+                                    <a class="cin-maps-btn" href="https://www.google.com/maps/search/?api=1&amp;query=33.666088%2C35.737484" target="_blank" rel="noopener noreferrer">Open in Maps</a>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 7 · RSVP -->
+                    <div class="swiper-slide" data-scene="rsvp" data-progress-label="RSVP">
+                        <div class="cin-slide__media">
+                            <img class="cin-slide__fill-img" src="images/story-embrace.png" alt="" loading="lazy" decoding="async" />
+                        </div>
+                        <div class="cin-slide__veil cin-slide__veil--soft"></div>
+                        <div class="cin-slide__grain" aria-hidden="true"></div>
+                        <div class="cin-slide__inner cin-slide__inner--center" id="cin-rsvp-root">
+                            <p class="cin-eyebrow" data-animate>Kindly reply</p>
+                            <h2 class="cin-display-lg" data-animate style="margin-top: 0.65rem">Will you celebrate<br />with us?</h2>
+                            <div class="cin-rsvp" id="cin-rsvp">
+                                <div class="cin-rsvp__validation" data-cin-rsvp-validation>
+                                    <p class="cin-rsvp__client-err" data-cin-rsvp-client-err>Please select at least one person if you are attending.</p>
+                                </div>
+                                <form class="cin-rsvp-form" id="cin-rsvp-form" novalidate data-cin-rsvp-demo>
+                                    <div class="cin-field">
+                                        <label for="cin-guest-name">Your name</label>
+                                        <input id="cin-guest-name" name="RsvpName" type="text" autocomplete="name" placeholder="Full name" required maxlength="200" />
+                                    </div>
+                                    <div class="cin-field">
+                                        <span class="cin-field-label">Attending</span>
+                                        <div class="cin-rsvp-attend-row" role="radiogroup" aria-labelledby="cin-rsvp-attend-legend">
+                                            <span id="cin-rsvp-attend-legend" class="cin-sr-only">Attending</span>
+                                            <label class="cin-rsvp-attend-opt">
+                                                <input type="radio" name="RsvpAttending" value="yes" required />
+                                                <span>Joyfully yes</span>
+                                            </label>
+                                            <label class="cin-rsvp-attend-opt">
+                                                <input type="radio" name="RsvpAttending" value="no" required />
+                                                <span>Regretfully no</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <fieldset class="cin-field cin-rsvp-party" id="cin-rsvp-party" data-cin-rsvp-party>
+                                        <legend>Who will attend?</legend>
+                                        <p class="cin-rsvp-party-cap" data-cap="3">Your invitation covers 3 people (including you).</p>
+                                        <div class="cin-rsvp-party__list">
+                                            <label class="cin-rsvp-party__row">
+                                                <input type="checkbox" name="PartySlotIndexes" value="0" />
+                                                <span class="cin-rsvp-party__name">Alex Guest</span>
+                                            </label>
+                                            <label class="cin-rsvp-party__row">
+                                                <input type="checkbox" name="PartySlotIndexes" value="1" />
+                                                <span class="cin-rsvp-party__name">Family member</span>
+                                            </label>
+                                            <label class="cin-rsvp-party__row">
+                                                <input type="checkbox" name="PartySlotIndexes" value="2" />
+                                                <span class="cin-rsvp-party__name">Guest 1</span>
+                                            </label>
+                                        </div>
+                                    </fieldset>
+                                    <div class="cin-rsvp__actions">
+                                        <button type="submit" class="cin-btn-primary">Send response</button>
+                                    </div>
+                                </form>
+                                <div class="cin-rsvp__success" id="cin-rsvp-success" role="status">
+                                    <p class="cin-display-md">Thank you — we’ll be in touch with details.</p>
+                                    <p class="cin-body" style="margin-top: 0.75rem">Your place is held in our hearts until the day.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 8 · Gifts -->
+                    <div class="swiper-slide" data-scene="gifts" data-progress-label="Gifts">
+                        <div class="cin-slide__media">
+                            <img class="cin-slide__fill-img" src="images/celebration-arch.png" alt="" loading="lazy" decoding="async" />
+                        </div>
+                        <div class="cin-slide__veil cin-slide__veil--soft"></div>
+                        <div class="cin-slide__grain" aria-hidden="true"></div>
+                        <div class="cin-slide__inner cin-slide__inner--center">
+                            <p class="cin-eyebrow" data-animate>Gifts</p>
+                            <p class="cin-body" data-animate style="margin-top: 0.65rem; max-width: 18.5rem; line-height: 1.55">
+                                Your presence is gift enough — if you still wish to spoil us, you may use either option below.
+                            </p>
+                            <div class="cin-gifts" data-animate>
+                                <article class="cin-gift-card">
+                                    <p class="cin-gift-card__label">Wish Money</p>
+                                    <p class="cin-gift-card__hint">Account number</p>
+                                    <p class="cin-gift-card__value" dir="ltr" translate="no">20919566-03</p>
+                                </article>
+                                <article class="cin-gift-card">
+                                    <p class="cin-gift-card__label">Phone</p>
+                                    <p class="cin-gift-card__hint">For transfers or to reach us</p>
+                                    <a class="cin-gift-card__value cin-gift-card__value--link" dir="ltr" translate="no" href="tel:+96181646800">81 646 800</a>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 9 · Finale -->
+                    <div class="swiper-slide" data-scene="finale" data-progress-label="Finale">
+                        <div class="cin-slide__media">
+                            <img class="cin-slide__fill-img" src="images/finale-embrace.png" alt="" loading="lazy" decoding="async" />
+                        </div>
+                        <div class="cin-slide__veil cin-slide__veil--minimal"></div>
+                        <div class="cin-slide__grain" aria-hidden="true"></div>
+                        <div class="cin-slide__inner cin-slide__inner--center">
+                            <p class="cin-eyebrow" data-animate>With love</p>
+                            <h2 class="cin-display-xl" data-animate style="margin-top: 1.25rem; font-size: clamp(2.4rem, 11vw, 3.2rem)">See you at<br />the wedding</h2>
+                            <div class="cin-divider" data-animate aria-hidden="true"></div>
+                            <p class="cin-body" data-animate style="max-width: 17rem">Until then, carry this day gently — we saved a seat in our story for you.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="cin-chrome" aria-label="Story navigation">
+                <button type="button" class="cin-icon-btn" id="cin-prev" aria-label="Previous chapter">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" aria-hidden="true"><path d="M14 7l-5 5 5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="cin-hint">
+                    <span class="cin-hint__text">Swipe</span>
+                    <div class="cin-hint__dots" aria-hidden="true"><span></span><span></span></div>
+                </div>
+                <button type="button" class="cin-icon-btn" id="cin-next" aria-label="Next chapter">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" aria-hidden="true"><path d="M10 7l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Src set in audio.js only if ./music/ambient.mp3 exists (avoids 404 when optional file is missing) -->
+    <audio id="cin-audio-el" loop preload="none" playsinline></audio>
+
+    <script src="./vendor/swiper/swiper-bundle.min.js"></script>
+    <script src="./vendor/gsap/gsap.min.js"></script>
+    <script src="./js/countdown.js" defer></script>
+    <script src="./js/audio.js" defer></script>
+    <script src="./js/animations.js" defer></script>
+    <script src="./js/swiper-config.js" defer></script>
+    <script src="./js/app.js" defer></script>
+</body>
+</html>

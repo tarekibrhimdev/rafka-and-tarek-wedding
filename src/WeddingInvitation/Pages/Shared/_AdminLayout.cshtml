@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] · Wedding Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+</head>
+<body class="admin-body">
+    <div class="admin-shell">
+        <aside class="admin-sidebar">
+            <div class="admin-brand">
+                <div>
+                    <div class="admin-brand-title">Wedding</div>
+                    <div class="admin-brand-sub">Administration</div>
+                </div>
+            </div>
+            <nav class="admin-nav">
+                @{
+                    var pagePath = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+                    var isOverview = pagePath == "/Admin" || pagePath == "/Admin/Index";
+                    var isGuests = pagePath.StartsWith("/Admin/Guests", StringComparison.Ordinal);
+                }
+                <a class="admin-nav-link @(isOverview ? "active" : null)"
+                   asp-page="/Admin/Index">
+                    <span class="admin-nav-icon">◉</span> Overview
+                </a>
+                <a class="admin-nav-link @(isGuests ? "active" : null)"
+                   asp-page="/Admin/Guests/Index">
+                    <span class="admin-nav-icon">◎</span> Guests
+                </a>
+            </nav>
+            <div class="admin-sidebar-footer">
+                <form method="post" asp-page="/Account/Logout" class="d-inline w-100">
+                    <button type="submit" class="btn btn-sm btn-outline-light w-100 rounded-pill border-opacity-25">
+                        Sign out
+                    </button>
+                </form>
+            </div>
+        </aside>
+        <div class="admin-main">
+            <header class="admin-topbar d-none d-md-flex">
+                <span class="text-muted small">Signed in as <strong class="text-dark">@User.Identity?.Name</strong></span>
+            </header>
+            <main class="admin-content">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

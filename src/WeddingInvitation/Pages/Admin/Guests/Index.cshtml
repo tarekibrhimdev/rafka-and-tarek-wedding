@@ -1,0 +1,429 @@
+@page
+@model WeddingInvitation.Pages.Admin.Guests.IndexModel
+@{
+    ViewData["Title"] = "Guests";
+}
+
+<div class="admin-page-header">
+    <div>
+        <h1 class="admin-page-title">Guests</h1>
+        <p class="admin-page-subtitle text-muted">Manage invitees, household members, and invitation links.</p>
+    </div>
+    <button type="button" class="btn btn-admin-primary" data-bs-toggle="modal" data-bs-target="#createGuestModal">
+        <span class="me-1">+</span> Add guest
+    </button>
+</div>
+
+@if (TempData["Toast"] is string toast)
+{
+    <div class="alert alert-admin-success alert-dismissible fade show" role="alert">
+        @toast
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card admin-card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table admin-table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Guest</th>
+                        <th>Contact</th>
+                        <th class="text-center">Household</th>
+                        <th>Invitation</th>
+                        <th>RSVP</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var g in Model.Guests)
+                {
+                    var highlight = TempData["HighlightGuestId"] as string == g.Id.ToString();
+                    <tr class="@(highlight ? "table-row-highlight" : null)">
+                        <td>
+                            <div class="fw-semibold">@g.DisplayName</div>
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(g.Email))
+                            {
+                                <div class="small"><a href="mailto:@g.Email">@g.Email</a></div>
+                            }
+                            @if (!string.IsNullOrEmpty(g.Phone))
+                            {
+                                <div class="small text-muted">@g.Phone</div>
+                            }
+                            @if (string.IsNullOrEmpty(g.Email) && string.IsNullOrEmpty(g.Phone))
+                            {
+                                <span class="text-muted small">—</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <span class="badge rounded-pill bg-light text-dark border">@g.FamilyMemberCount @(g.FamilyMemberCount == 1 ? "member" : "members")</span>
+                        </td>
+                        <td>
+                            @if (g.HasInvitation && !string.IsNullOrEmpty(g.InvitationUrl))
+                            {
+                                <div class="small font-monospace text-truncate" style="max-width: 14rem;" title="@g.InvitationUrl">@g.InvitationUrl</div>
+                                <button type="button" class="btn btn-link btn-sm p-0 mt-1 copy-invite-btn" data-url="@g.InvitationUrl">Copy link</button>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">Not generated</span>
+                            }
+                        </td>
+                        <td>
+                            @if (g.HasInvitation)
+                            {
+                                @switch (g.RsvpStatus)
+                                {
+                                    case WeddingInvitation.Data.RsvpStatus.Pending:
+                                        <span class="badge rounded-pill badge-rsvp-pending">Pending</span>
+                                        break;
+                                    case WeddingInvitation.Data.RsvpStatus.Approved:
+                                        <span class="badge rounded-pill badge-rsvp-approved">Approved</span>
+                                        <div class="small text-muted mt-1">
+                                            @(g.ComingCount.HasValue ? $"{g.ComingCount} attending" : "Headcount pending")
+                                        </div>
+                                        break;
+                                    case WeddingInvitation.Data.RsvpStatus.Declined:
+                                        <span class="badge rounded-pill badge-rsvp-declined">Declined</span>
+                                        break;
+                                }
+                                <div class="small text-muted">Max @g.MaxPersons</div>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">—</span>
+                            }
+                        </td>
+                        <td class="text-end text-nowrap">
+                            @if (!g.HasInvitation)
+                            {
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-secondary me-1 btn-generate-invite"
+                                        data-guest-id="@g.Id"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#generateInviteModal">
+                                    Generate invite
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-secondary me-1 btn-regenerate-invite"
+                                        data-guest-id="@g.Id"
+                                        data-max="@g.MaxPersons"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#generateInviteModal">
+                                    Regenerate
+                                </button>
+                            }
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-primary me-1 btn-edit-guest"
+                                    data-guest-id="@g.Id"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editGuestModal">
+                                Edit
+                            </button>
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-danger btn-delete-guest"
+                                    data-id="@g.Id"
+                                    data-name="@g.DisplayName"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteGuestModal">
+                                Remove
+                            </button>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Guests.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-5">
+                            No guests yet. Use <strong>Add guest</strong> to create your first invitee.
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Create modal -->
+<div class="modal fade" id="createGuestModal" tabindex="-1" aria-labelledby="createGuestModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Create">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-semibold" id="createGuestModalLabel">New guest</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="CreateInput.DisplayName" class="form-label">Primary guest name</label>
+                            <input asp-for="CreateInput.DisplayName" class="form-control" autocomplete="off" />
+                            <span asp-validation-for="CreateInput.DisplayName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="CreateInput.Email" class="form-label">Email</label>
+                            <input asp-for="CreateInput.Email" class="form-control" autocomplete="off" />
+                            <span asp-validation-for="CreateInput.Email" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="CreateInput.Phone" class="form-label">Phone</label>
+                            <input asp-for="CreateInput.Phone" class="form-control" autocomplete="off" />
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="CreateInput.Notes" class="form-label">Notes</label>
+                            <textarea asp-for="CreateInput.Notes" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Household members</label>
+                            <p class="small text-muted mb-2">One name per row (spouse, children, etc.). Used later for seating.</p>
+                            <div id="createFamilyRows">
+                                <div class="input-group mb-2 family-row create-family-row">
+                                    <input type="text" name="CreateInput.FamilyMemberNames[0]" class="form-control" placeholder="Full name" />
+                                    <button type="button" class="btn btn-outline-secondary btn-remove-row" tabindex="-1">✕</button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="btnAddCreateFamilyRow">+ Add member</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-admin-primary">Save guest</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit modal -->
+<div class="modal fade" id="editGuestModal" tabindex="-1" aria-labelledby="editGuestModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Update">
+                <input type="hidden" asp-for="EditInput.GuestId" id="editGuestId" />
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-semibold" id="editGuestModalLabel">Edit guest</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="EditInput.DisplayName" class="form-label">Primary guest name</label>
+                            <input asp-for="EditInput.DisplayName" class="form-control" id="editDisplayName" autocomplete="off" />
+                            <span asp-validation-for="EditInput.DisplayName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="EditInput.Email" class="form-label">Email</label>
+                            <input asp-for="EditInput.Email" class="form-control" id="editEmail" autocomplete="off" />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="EditInput.Phone" class="form-label">Phone</label>
+                            <input asp-for="EditInput.Phone" class="form-control" id="editPhone" autocomplete="off" />
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="EditInput.Notes" class="form-label">Notes</label>
+                            <textarea asp-for="EditInput.Notes" class="form-control" rows="2" id="editNotes"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Household members</label>
+                            <div id="editFamilyRows"></div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary mt-2" id="btnAddEditFamilyRow">+ Add member</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-admin-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete modal -->
+<div class="modal fade" id="deleteGuestModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Delete">
+                <input type="hidden" asp-for="DeleteGuestId" id="deleteGuestId" />
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-semibold">Remove guest</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">Remove <strong id="deleteGuestName"></strong> from the list? Invitations will be invalidated. You can restore only by database backup—this action hides the guest in the app.</p>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Remove</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Generate invitation modal -->
+<div class="modal fade" id="generateInviteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="GenerateInvitation">
+                <input type="hidden" asp-for="GenerateGuestId" id="generateGuestId" />
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-semibold" id="generateInviteTitle">Invitation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="small text-muted">Set how many people this single invitation covers (public RSVP will offer from that number down to 1).</p>
+                    <label asp-for="MaxPersons" class="form-label">Party size</label>
+                    <input asp-for="MaxPersons" class="form-control" type="number" min="1" max="99" id="generateMaxPersons" />
+                    <span asp-validation-for="MaxPersons" class="text-danger small"></span>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-admin-primary" id="generateSubmitBtn">Generate link</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            function reindexRows(container, namePrefix) {
+                const rows = container.querySelectorAll('.family-row');
+                rows.forEach((row, i) => {
+                    const input = row.querySelector('input[type=text]');
+                    if (input) input.name = namePrefix + '[' + i + ']';
+                });
+            }
+
+            const createContainer = document.getElementById('createFamilyRows');
+            document.getElementById('btnAddCreateFamilyRow')?.addEventListener('click', () => {
+                const div = document.createElement('div');
+                div.className = 'input-group mb-2 family-row create-family-row';
+                div.innerHTML = '<input type="text" class="form-control" placeholder="Full name" />' +
+                    '<button type="button" class="btn btn-outline-secondary btn-remove-row" tabindex="-1">✕</button>';
+                createContainer.appendChild(div);
+                reindexRows(createContainer, 'CreateInput.FamilyMemberNames');
+                div.querySelector('.btn-remove-row').addEventListener('click', () => {
+                    div.remove();
+                    reindexRows(createContainer, 'CreateInput.FamilyMemberNames');
+                });
+            });
+            createContainer?.querySelectorAll('.btn-remove-row').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    btn.closest('.create-family-row')?.remove();
+                    reindexRows(createContainer, 'CreateInput.FamilyMemberNames');
+                });
+            });
+            reindexRows(createContainer, 'CreateInput.FamilyMemberNames');
+
+            const editRows = document.getElementById('editFamilyRows');
+            document.getElementById('btnAddEditFamilyRow')?.addEventListener('click', () => {
+                const div = document.createElement('div');
+                div.className = 'input-group mb-2 family-row';
+                div.innerHTML = '<input type="text" class="form-control" placeholder="Full name" />' +
+                    '<button type="button" class="btn btn-outline-secondary btn-remove-row" tabindex="-1">✕</button>';
+                editRows.appendChild(div);
+                reindexRows(editRows, 'EditInput.FamilyMemberNames');
+                div.querySelector('.btn-remove-row').addEventListener('click', () => {
+                    div.remove();
+                    reindexRows(editRows, 'EditInput.FamilyMemberNames');
+                });
+            });
+
+            document.querySelectorAll('.btn-copy-invite, .copy-invite-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const url = btn.getAttribute('data-url');
+                    if (!url) return;
+                    try {
+                        await navigator.clipboard.writeText(url);
+                        btn.textContent = 'Copied!';
+                        setTimeout(() => { btn.textContent = 'Copy link'; }, 1600);
+                    } catch { alert(url); }
+                });
+            });
+
+            document.querySelectorAll('.btn-delete-guest').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById('deleteGuestId').value = btn.getAttribute('data-id');
+                    document.getElementById('deleteGuestName').textContent = btn.getAttribute('data-name');
+                });
+            });
+
+            document.querySelectorAll('.btn-generate-invite, .btn-regenerate-invite').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById('generateGuestId').value = btn.getAttribute('data-guest-id');
+                    const max = btn.getAttribute('data-max');
+                    const mp = document.getElementById('generateMaxPersons');
+                    if (max && mp) mp.value = max;
+                    else if (mp) mp.value = 2;
+                    const title = document.getElementById('generateInviteTitle');
+                    const submit = document.getElementById('generateSubmitBtn');
+                    if (btn.classList.contains('btn-regenerate-invite')) {
+                        title.textContent = 'Regenerate invitation';
+                        submit.textContent = 'Regenerate link';
+                    } else {
+                        title.textContent = 'Generate invitation';
+                        submit.textContent = 'Generate link';
+                    }
+                });
+            });
+
+            document.querySelectorAll('.btn-edit-guest').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const id = btn.getAttribute('data-guest-id');
+                    const res = await fetch('?handler=GuestJson&id=' + encodeURIComponent(id));
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    document.getElementById('editGuestId').value = data.id;
+                    document.getElementById('editDisplayName').value = data.displayName ?? '';
+                    document.getElementById('editEmail').value = data.email ?? '';
+                    document.getElementById('editPhone').value = data.phone ?? '';
+                    document.getElementById('editNotes').value = data.notes ?? '';
+                    editRows.innerHTML = '';
+                    const names = (data.familyMembers || []).map(x => x.fullName);
+                    if (names.length === 0) names.push('');
+                    names.forEach(name => {
+                        const div = document.createElement('div');
+                        div.className = 'input-group mb-2 family-row';
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.className = 'form-control';
+                        input.placeholder = 'Full name';
+                        input.value = name;
+                        const btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'btn btn-outline-secondary btn-remove-row';
+                        btn.tabIndex = -1;
+                        btn.textContent = '✕';
+                        btn.addEventListener('click', () => {
+                            div.remove();
+                            reindexRows(editRows, 'EditInput.FamilyMemberNames');
+                        });
+                        div.appendChild(input);
+                        div.appendChild(btn);
+                        editRows.appendChild(div);
+                    });
+                    reindexRows(editRows, 'EditInput.FamilyMemberNames');
+                });
+            });
+
+            const editForm = document.querySelector('#editGuestModal form');
+            editForm?.addEventListener('submit', () => {
+                reindexRows(editRows, 'EditInput.FamilyMemberNames');
+            });
+        })();
+    </script>
+}

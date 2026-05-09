@@ -1,0 +1,367 @@
+@page "/invite/{token}"
+@model WeddingInvitation.Pages.InviteModel
+@{
+    Layout = "_CinematicInvitationLayout";
+    ViewData["Title"] = "Invitation · " + Model.CoupleLine;
+    string En(string key) => Model.CopyEn.TryGetValue(key, out var v) ? v : "";
+    string CapFmt() => string.Format(En("cin_rsvp_party_cap_fmt"), Model.PartyMax);
+    var coupleParts = Model.CoupleLine.Split('&', 2, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+    string finaleMonogram = Model.CoupleLine;
+    if (coupleParts.Length >= 2 && coupleParts[0].Length > 0 && coupleParts[1].Length > 0)
+    {
+        finaleMonogram = $"{char.ToUpperInvariant(coupleParts[0][0])} · {char.ToUpperInvariant(coupleParts[1][0])}";
+    }
+    string CinImg(string f) => Url.Content($"~/cinematic-invite/images/{f}");
+}
+
+<div id="invite-root" class="invite-root lang-en">
+    <script type="application/json" id="invite-copy-json">@Html.Raw(Model.InviteCopyJson)</script>
+    <div id="cin-loader" class="cin-loader" aria-busy="true" aria-live="polite">
+        <div class="cin-loader__inner">
+            <p class="cin-loader__mark" data-i18n-key="cin_loader_mark">@En("cin_loader_mark")</p>
+            <div class="cin-loader__line" aria-hidden="true"></div>
+        </div>
+    </div>
+
+    <div class="cin-stage-wrap">
+        <div class="cin-shell" id="cin-shell">
+            <div class="cin-progress-host" aria-hidden="true">
+                <div class="cin-progress" id="cin-progress"></div>
+                <div class="cin-lang-row" role="group" aria-label="Language">
+                    <button type="button" class="cin-lang-pill cin-lang-toggle-opt is-active" data-set-lang="en" aria-pressed="true">English</button>
+                    <button type="button" class="cin-lang-pill cin-lang-toggle-opt" data-set-lang="ar" aria-pressed="false">العربية</button>
+                </div>
+                <p class="cin-brand-mark">
+                    <span class="cin-brand-mark__inner" data-i18n-key="cin_brand_save_the_date">@En("cin_brand_save_the_date")</span>
+                </p>
+            </div>
+
+            <button type="button" class="cin-audio-btn" id="cin-audio-btn" aria-label="Toggle ambient music" aria-pressed="true" title="Sound">
+                <svg class="cin-audio-btn__on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                    <path d="M11 5L6 9H2v6h4l5 4V5zM19 9a7 7 0 010 6M22 7a11 11 0 010 10" stroke-linecap="round" />
+                </svg>
+                <svg class="cin-audio-btn__off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                    <path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6" stroke-linecap="round" />
+                </svg>
+            </button>
+
+            <div class="swiper cin-main-swiper" id="cin-main-swiper" aria-roledescription="carousel" aria-label="Wedding story chapters">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide" data-scene="opening" data-progress-label="Welcome">
+                        <div class="cin-slide__media">
+                            <img class="cin-slide__fill-img" src="@CinImg("hero-opening.png")" alt="" loading="eager" fetchpriority="high" decoding="async" />
+                        </div>
+                        <div class="cin-slide__veil"></div>
+                        <div class="cin-slide__grain" aria-hidden="true"></div>
+                        <div class="cin-slide__inner cin-slide__inner--center">
+                            <p class="cin-sr-only" data-i18n-key="cin_brand_save_the_date">@En("cin_brand_save_the_date")</p>
+    @{
+        var hasTwoNames = coupleParts.Length >= 2 && coupleParts[0].Length > 0 && coupleParts[1].Length > 0;
+    }
+                            <h1 class="cin-display-xl cin-opening-names" data-animate style="margin-top: 0">
+                                @if (hasTwoNames)
+                                {
+                                    <span data-i18n-key="cin_couple_given_1">@En("cin_couple_given_1")</span><br /><span class="cin-couple-join" data-i18n-key="cin_couple_joiner">@En("cin_couple_joiner")</span><text> </text><span data-i18n-key="cin_couple_given_2">@En("cin_couple_given_2")</span>
+                                }
+                                else
+                                {
+                                    <span data-i18n-key="cin_couple_full">@En("cin_couple_full")</span>
+                                }
+                            </h1>
+                            <p class="cin-hero-date" data-animate data-i18n-key="slide2_when">@En("slide2_when")</p>
+                            <p class="cin-swipe-begin" data-animate data-i18n-key="cin_swipe_begin">@En("cin_swipe_begin")</p>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide" data-scene="story" data-progress-label="Story">
+                        <div class="cin-slide__media">
+                            <img class="cin-slide__fill-img" src="@CinImg("story-ring.png")" alt="" loading="lazy" decoding="async" />
+                        </div>
+                        <div class="cin-slide__veil cin-slide__veil--soft"></div>
+                        <div class="cin-slide__grain" aria-hidden="true"></div>
+                        <div class="cin-slide__inner cin-slide__inner--center">
+                            <p class="cin-eyebrow" data-animate data-i18n-key="cin_story_eyebrow">@En("cin_story_eyebrow")</p>
+                            <h2 class="cin-display-md cin-story-lead" data-animate><span data-i18n-key="cin_story_lead">@En("cin_story_lead")</span></h2>
+                            <div class="cin-divider" data-animate aria-hidden="true"></div>
+                            <div class="cin-timeline" data-animate-group>
+                                <div class="cin-timeline__item" data-animate-child>
+                                    <span class="cin-timeline__year">2023</span>
+                                    <div>
+                                        <p class="cin-caption" data-i18n-key="cin_timeline_2023_caption">@En("cin_timeline_2023_caption")</p>
+                                        <p class="cin-body" style="margin-top: 0.35rem" data-i18n-key="cin_timeline_2023_body">@En("cin_timeline_2023_body")</p>
+                                    </div>
+                                </div>
+                                <div class="cin-timeline__item" data-animate-child>
+                                    <span class="cin-timeline__year">2024</span>
+                                    <div>
+                                        <p class="cin-caption" data-i18n-key="cin_timeline_2024_caption">@En("cin_timeline_2024_caption")</p>
+                                        <p class="cin-body" style="margin-top: 0.35rem" data-i18n-key="cin_timeline_2024_body">@En("cin_timeline_2024_body")</p>
+                                    </div>
+                                </div>
+                                <div class="cin-timeline__item" data-animate-child>
+                                    <span class="cin-timeline__year">2025</span>
+                                    <div>
+                                        <p class="cin-caption" data-i18n-key="cin_timeline_2025_caption">@En("cin_timeline_2025_caption")</p>
+                                        <p class="cin-body" style="margin-top: 0.35rem" data-i18n-key="cin_timeline_2025_body">@En("cin_timeline_2025_body")</p>
+                                    </div>
+                                </div>
+                                <div class="cin-timeline__item" data-animate-child>
+                                    <span class="cin-timeline__year">2026</span>
+                                    <div>
+                                        <p class="cin-caption" data-i18n-key="cin_timeline_2026_caption">@En("cin_timeline_2026_caption")</p>
+                                        <p class="cin-body" style="margin-top: 0.35rem" data-i18n-key="cin_timeline_2026_body">@En("cin_timeline_2026_body")</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide" data-scene="proposal" data-progress-label="Proposal">
+                        <div class="cin-slide__media">
+                            <img class="cin-slide__fill-img" src="@CinImg("proposal-joined-bw.png")" alt="" loading="lazy" decoding="async" />
+                        </div>
+                        <div class="cin-slide__veil cin-slide__veil--minimal"></div>
+                        <div class="cin-slide__grain" aria-hidden="true"></div>
+                        <div class="cin-slide__inner cin-slide__inner--bottom">
+                            <p class="cin-display-lg cin-proposal-verse" data-animate style="margin-top: 0; max-width: 19rem; margin-left: auto; margin-right: auto; text-align: center" data-i18n-key="cin_proposal_quote">@En("cin_proposal_quote")</p>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide" data-scene="details" data-progress-label="Details">
+                        <div class="cin-slide__media">
+                            <img class="cin-slide__fill-img" src="@CinImg("celebration-landscape.png")" alt="" loading="lazy" decoding="async" />
+                        </div>
+                        <div class="cin-slide__veil"></div>
+                        <div class="cin-slide__grain" aria-hidden="true"></div>
+                        <div class="cin-slide__inner cin-slide__inner--stack cin-slide__inner--details">
+                            <p class="cin-eyebrow" data-animate style="text-align: center" data-i18n-key="lux_celebration_label">@En("lux_celebration_label")</p>
+                            <p class="cin-details-date" data-animate data-i18n-key="cin_detail_date_value">@En("cin_detail_date_value")</p>
+                            <div class="cin-event-cards" data-animate-group>
+                                <article class="cin-event-card" data-animate-child>
+                                    <div class="cin-event-card__icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.45"><path d="M4 21h16M6 21V10.5l6-4.5 6 4.5V21M9 21v-4h6v4M12 6.5V3M12 3h.01" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                    </div>
+                                    <div class="cin-event-card__body">
+                                        <p class="cin-event-card__kicker" data-i18n-key="cin_detail_ceremony_kicker">@En("cin_detail_ceremony_kicker")</p>
+                                        <p class="cin-event-card__time" data-i18n-key="cin_detail_ceremony_time">@En("cin_detail_ceremony_time")</p>
+                                        <p class="cin-event-card__title" data-i18n-key="cin_detail_ceremony_venue">@En("cin_detail_ceremony_venue")</p>
+                                        <p class="cin-event-card__meta" data-i18n-key="cin_detail_ceremony_meta">@En("cin_detail_ceremony_meta")</p>
+                                    </div>
+                                </article>
+                                <article class="cin-event-card cin-event-card--party" data-animate-child>
+                                    <div class="cin-event-card__icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.45"><path d="M8 2h8M9 2v6.5c0 2 1.5 3.5 3 3.5s3-1.5 3-3.5V2" stroke-linecap="round" /><path d="M12 12v8M9 22h6" stroke-linecap="round" /><path d="M7.5 8.5h9" stroke-linecap="round" /></svg>
+                                    </div>
+                                    <div class="cin-event-card__body">
+                                        <p class="cin-event-card__kicker" data-i18n-key="cin_detail_reception_kicker">@En("cin_detail_reception_kicker")</p>
+                                        <p class="cin-event-card__time" data-i18n-key="cin_detail_reception_time">@En("cin_detail_reception_time")</p>
+                                        <p class="cin-event-card__title" data-i18n-key="cin_detail_reception_venue">@En("cin_detail_reception_venue")</p>
+                                        <p class="cin-event-card__meta" data-i18n-key="cin_detail_reception_meta">@En("cin_detail_reception_meta")</p>
+                                    </div>
+                                </article>
+                            </div>
+                            <p class="cin-details-attire" data-animate data-i18n-key="lux_date_note">@En("lux_date_note")</p>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide" data-scene="countdown" data-progress-label="Countdown">
+                        <div class="cin-slide__media">
+                            <img class="cin-slide__fill-img" src="@CinImg("countdown-landscape.png")" alt="" loading="lazy" decoding="async" />
+                        </div>
+                        <div class="cin-slide__veil cin-slide__veil--countdown"></div>
+                        <div class="cin-slide__grain" aria-hidden="true"></div>
+                        <div class="cin-slide__inner cin-slide__inner--center">
+                            <p class="cin-eyebrow" data-animate data-i18n-key="cin_countdown_eyebrow">@En("cin_countdown_eyebrow")</p>
+                            <h2 class="cin-display-lg" data-animate style="margin-top: 1rem"><span data-i18n-key="cin_countdown_line1">@En("cin_countdown_line1")</span><br /><span data-i18n-key="cin_countdown_line2">@En("cin_countdown_line2")</span></h2>
+                            <div id="cin-countdown-root" class="cin-countdown" data-animate aria-live="polite">
+                                <div class="cin-countdown__unit">
+                                    <span class="cin-countdown__num" data-cd="days">0</span>
+                                    <p class="cin-countdown__lbl" data-i18n-key="cin_cd_days">@En("cin_cd_days")</p>
+                                </div>
+                                <div class="cin-countdown__unit">
+                                    <span class="cin-countdown__num" data-cd="hours">0</span>
+                                    <p class="cin-countdown__lbl" data-i18n-key="cin_cd_hrs">@En("cin_cd_hrs")</p>
+                                </div>
+                                <div class="cin-countdown__unit">
+                                    <span class="cin-countdown__num" data-cd="minutes">0</span>
+                                    <p class="cin-countdown__lbl" data-i18n-key="cin_cd_min">@En("cin_cd_min")</p>
+                                </div>
+                                <div class="cin-countdown__unit">
+                                    <span class="cin-countdown__num" data-cd="seconds">0</span>
+                                    <p class="cin-countdown__lbl" data-i18n-key="cin_cd_sec">@En("cin_cd_sec")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide" data-scene="location" data-progress-label="Location">
+                        <div class="cin-slide__media">
+                            <img class="cin-slide__fill-img" src="@CinImg("celebration-arch.png")" alt="" loading="lazy" decoding="async" />
+                        </div>
+                        <div class="cin-slide__veil"></div>
+                        <div class="cin-slide__grain" aria-hidden="true"></div>
+                        <div class="cin-slide__inner cin-slide__inner--stack">
+                            <p class="cin-eyebrow" data-animate style="text-align: center" data-i18n-key="cin_location_eyebrow">@En("cin_location_eyebrow")</p>
+                            <p class="cin-location-lead cin-body" data-animate style="text-align: center; margin-top: 0.45rem; max-width: 20rem; margin-left: auto; margin-right: auto; line-height: 1.5" data-i18n-key="cin_location_lead">@En("cin_location_lead")</p>
+                            <div class="cin-locations">
+                                <article class="cin-location-block" data-animate>
+                                    <p class="cin-location-block__kicker" data-i18n-key="cin_location_church_kicker">@En("cin_location_church_kicker")</p>
+                                    <h3 class="cin-location-block__title" data-i18n-key="cin_location_church_title">@En("cin_location_church_title")</h3>
+                                    <p class="cin-location-block__meta cin-body" data-i18n-key="cin_location_church_meta">@En("cin_location_church_meta")</p>
+                                    <div class="cin-map-frame">
+                                        <iframe title="Church location map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.openstreetmap.org/export/embed.html?bbox=35.820%2C33.620%2C35.870%2C33.660&amp;layer=mapnik&amp;marker=33.640%2C35.845"></iframe>
+                                    </div>
+                                    <a class="cin-maps-btn" href="https://www.google.com/maps/search/?api=1&amp;query=Saint+Elias+Catholic+Church+Kherbet+Qanafar+Lebanon" target="_blank" rel="noopener noreferrer" data-i18n-key="cin_maps_open">@En("cin_maps_open")</a>
+                                </article>
+                                <article class="cin-location-block" data-animate>
+                                    <p class="cin-location-block__kicker" data-i18n-key="cin_location_venue_kicker">@En("cin_location_venue_kicker")</p>
+                                    <h3 class="cin-location-block__title" data-i18n-key="cin_location_venue_title">@En("cin_location_venue_title")</h3>
+                                    <p class="cin-location-block__meta cin-body" data-i18n-key="cin_location_venue_meta">@En("cin_location_venue_meta")</p>
+                                    <div class="cin-map-frame">
+                                        <iframe title="Reception venue map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.openstreetmap.org/export/embed.html?bbox=35.707%2C33.636%2C35.768%2C33.696&amp;layer=mapnik&amp;marker=33.666088%2C35.737484"></iframe>
+                                    </div>
+                                    <a class="cin-maps-btn" href="https://www.google.com/maps/search/?api=1&amp;query=33.666088%2C35.737484" target="_blank" rel="noopener noreferrer" data-i18n-key="cin_maps_open">@En("cin_maps_open")</a>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide" data-scene="rsvp" data-progress-label="RSVP">
+                        <div class="cin-slide__media">
+                            <img class="cin-slide__fill-img" src="@CinImg("story-embrace.png")" alt="" loading="lazy" decoding="async" />
+                        </div>
+                        <div class="cin-slide__veil cin-slide__veil--soft"></div>
+                        <div class="cin-slide__grain" aria-hidden="true"></div>
+                        <div class="cin-slide__inner cin-slide__inner--center" id="cin-rsvp-root">
+                            <p class="cin-eyebrow" data-animate data-i18n-key="cin_rsvp_eyebrow">@En("cin_rsvp_eyebrow")</p>
+                            <h2 class="cin-display-lg" data-animate style="margin-top: 0.65rem"><span data-i18n-key="cin_rsvp_line1">@En("cin_rsvp_line1")</span><br /><span data-i18n-key="cin_rsvp_line2">@En("cin_rsvp_line2")</span></h2>
+                            <div class="cin-rsvp@(Model.RsvpSuccess ? " is-sent" : "")" id="cin-rsvp">
+                                <div class="cin-rsvp__validation@(ViewData.ModelState.ErrorCount > 0 ? " is-visible" : "")" data-cin-rsvp-validation>
+                                    <div asp-validation-summary="All"></div>
+                                    <p class="cin-rsvp__client-err" data-cin-rsvp-client-err data-i18n-key="cin_rsvp_party_err_min">@En("cin_rsvp_party_err_min")</p>
+                                </div>
+                                <form class="cin-rsvp-form" id="cin-rsvp-form" method="post" asp-page="/Invite" asp-page-handler="Rsvp" asp-route-token="@Model.InviteToken">
+                                    <div class="cin-field">
+                                        <label for="cin-guest-name" data-i18n-key="cin_rsvp_label_name">@En("cin_rsvp_label_name")</label>
+                                        <input id="cin-guest-name" name="RsvpName" type="text" autocomplete="name" value="@Model.GuestDisplayName" data-i18n-placeholder="cin_rsvp_ph_name" placeholder="@En("cin_rsvp_ph_name")" required maxlength="200" />
+                                    </div>
+                                    <div class="cin-field">
+                                        <span class="cin-field-label" data-i18n-key="cin_rsvp_label_attend">@En("cin_rsvp_label_attend")</span>
+                                        <div class="cin-rsvp-attend-row" role="radiogroup" aria-labelledby="cin-rsvp-attend-legend">
+                                            <span id="cin-rsvp-attend-legend" class="cin-sr-only" data-i18n-key="cin_rsvp_label_attend">@En("cin_rsvp_label_attend")</span>
+                                            <label class="cin-rsvp-attend-opt">
+                                                <input type="radio" name="RsvpAttending" value="yes" required @(Model.RsvpAttending == "yes" ? "checked" : null) />
+                                                <span data-i18n-key="cin_rsvp_yes">@En("cin_rsvp_yes")</span>
+                                            </label>
+                                            <label class="cin-rsvp-attend-opt">
+                                                <input type="radio" name="RsvpAttending" value="no" required @(Model.RsvpAttending == "no" ? "checked" : null) />
+                                                <span data-i18n-key="cin_rsvp_no">@En("cin_rsvp_no")</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    @if (Model.PartyMax > 1)
+                                    {
+                                        <fieldset class="cin-field cin-rsvp-party@(Model.RsvpAttending == "no" ? " is-hidden" : "")" id="cin-rsvp-party" data-cin-rsvp-party>
+                                            <legend data-i18n-key="cin_rsvp_label_party">@En("cin_rsvp_label_party")</legend>
+                                            <p class="cin-rsvp-party-cap" data-i18n-key="cin_rsvp_party_cap_fmt" data-cap="@Model.PartyMax">@CapFmt()</p>
+                                            <div class="cin-rsvp-party__list">
+                                                @foreach (var s in Model.PartySlots)
+                                                {
+                                                    var isChecked = Model.PartySlotIndexes != null && Model.PartySlotIndexes.Contains(s.Index);
+                                                    <label class="cin-rsvp-party__row">
+                                                        <input type="checkbox" name="PartySlotIndexes" value="@s.Index" @(isChecked ? "checked" : null) />
+                                                        @if (s.I18nFormatArg is not null)
+                                                        {
+                                                            <span class="cin-rsvp-party__name" data-i18n-key="cin_rsvp_party_extra_fmt" data-fmt-arg="@s.I18nFormatArg">@s.Label</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="cin-rsvp-party__name">@s.Label</span>
+                                                        }
+                                                    </label>
+                                                }
+                                            </div>
+                                        </fieldset>
+                                    }
+                                    <div class="cin-rsvp__actions">
+                                        <button type="submit" class="cin-btn-primary" data-i18n-key="cin_rsvp_submit">@En("cin_rsvp_submit")</button>
+                                    </div>
+                                </form>
+                                <div class="cin-rsvp__success@(Model.RsvpSuccess ? " is-visible" : "")" id="cin-rsvp-success" role="status">
+                                    <p class="cin-display-md" data-i18n-key="cin_rsvp_success_1">@En("cin_rsvp_success_1")</p>
+                                    <p class="cin-body" style="margin-top: 0.75rem" data-i18n-key="cin_rsvp_success_2">@En("cin_rsvp_success_2")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide" data-scene="gifts" data-progress-label="Gifts">
+                        <div class="cin-slide__media">
+                            <img class="cin-slide__fill-img" src="@CinImg("celebration-arch.png")" alt="" loading="lazy" decoding="async" />
+                        </div>
+                        <div class="cin-slide__veil cin-slide__veil--soft"></div>
+                        <div class="cin-slide__grain" aria-hidden="true"></div>
+                        <div class="cin-slide__inner cin-slide__inner--center">
+                            <p class="cin-eyebrow" data-animate data-i18n-key="cin_gifts_eyebrow">@En("cin_gifts_eyebrow")</p>
+                            <p class="cin-body" data-animate style="margin-top: 0.65rem; max-width: 18.5rem; line-height: 1.55" data-i18n-key="cin_gifts_lead">@En("cin_gifts_lead")</p>
+                            <div class="cin-gifts" data-animate>
+                                <article class="cin-gift-card">
+                                    <p class="cin-gift-card__label" data-i18n-key="cin_gifts_wish_label">@En("cin_gifts_wish_label")</p>
+                                    <p class="cin-gift-card__hint" data-i18n-key="cin_gifts_wish_hint">@En("cin_gifts_wish_hint")</p>
+                                    <p class="cin-gift-card__value" dir="ltr" translate="no" data-i18n-key="cin_gifts_wish_account">@En("cin_gifts_wish_account")</p>
+                                </article>
+                                <article class="cin-gift-card">
+                                    <p class="cin-gift-card__label" data-i18n-key="cin_gifts_phone_label">@En("cin_gifts_phone_label")</p>
+                                    <p class="cin-gift-card__hint" data-i18n-key="cin_gifts_phone_hint">@En("cin_gifts_phone_hint")</p>
+                                    <a class="cin-gift-card__value cin-gift-card__value--link" dir="ltr" translate="no" href="tel:+96181646800" data-i18n-key="cin_gifts_phone_display">@En("cin_gifts_phone_display")</a>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide" data-scene="finale" data-progress-label="Finale">
+                        <div class="cin-slide__media">
+                            <img class="cin-slide__fill-img" src="@CinImg("finale-embrace.png")" alt="" loading="lazy" decoding="async" />
+                        </div>
+                        <div class="cin-slide__veil cin-slide__veil--minimal"></div>
+                        <div class="cin-slide__grain" aria-hidden="true"></div>
+                        <div class="cin-slide__inner cin-slide__inner--center">
+                            <p class="cin-eyebrow" data-animate data-i18n-key="lux_finale_kicker">@En("lux_finale_kicker")</p>
+                            <h2 class="cin-display-xl" data-animate style="margin-top: 1.25rem; font-size: clamp(2.4rem, 11vw, 3.2rem)"><span data-i18n-key="cin_finale_title_1">@En("cin_finale_title_1")</span><br /><span data-i18n-key="cin_finale_title_2">@En("cin_finale_title_2")</span></h2>
+                            <p class="cin-display-lg" data-animate style="margin-top: 0.75rem; font-size: clamp(1.8rem, 8vw, 2.4rem)">@finaleMonogram</p>
+                            <div class="cin-divider" data-animate aria-hidden="true"></div>
+                            <p class="cin-body" data-animate style="max-width: 17rem" data-i18n-key="cin_finale_body">@En("cin_finale_body")</p>
+                            <p class="cin-body" data-animate style="margin-top: 1rem; max-width: 17rem; font-family: var(--cin-font-ui); font-size: 0.75rem; letter-spacing: 0.08em;" data-i18n-key="slide2_rsvpPhones">@En("slide2_rsvpPhones")</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="cin-chrome" aria-label="Story navigation">
+                <button type="button" class="cin-icon-btn" id="cin-prev" aria-label="Previous chapter">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" aria-hidden="true"><path d="M14 7l-5 5 5 5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </button>
+                <div class="cin-hint">
+                    <span class="cin-hint__text" data-i18n-key="lux_swipe_hint">@En("lux_swipe_hint")</span>
+                    <div class="cin-hint__dots" aria-hidden="true"><span></span><span></span></div>
+                </div>
+                <button type="button" class="cin-icon-btn" id="cin-next" aria-label="Next chapter">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" aria-hidden="true"><path d="M10 7l5 5-5 5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <audio id="cin-audio-el" loop preload="none" playsinline></audio>
+</div>
+
+@section Scripts {
+    <script src="~/cinematic-invite/vendor/swiper/swiper-bundle.min.js" asp-append-version="true"></script>
+    <script src="~/cinematic-invite/vendor/gsap/gsap.min.js" asp-append-version="true"></script>
+    <script src="~/cinematic-invite/js/countdown.js" asp-append-version="true" defer></script>
+    <script src="~/cinematic-invite/js/audio.js" asp-append-version="true" defer></script>
+    <script src="~/cinematic-invite/js/animations.js" asp-append-version="true" defer></script>
+    <script src="~/cinematic-invite/js/swiper-config.js" asp-append-version="true" defer></script>
+    <script src="~/cinematic-invite/js/app.js" asp-append-version="true" defer></script>
+    <script src="~/cinematic-invite/js/invite-i18n.js" asp-append-version="true" defer></script>
+}
