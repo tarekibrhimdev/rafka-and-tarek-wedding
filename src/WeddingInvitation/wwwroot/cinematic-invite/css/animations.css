@@ -88,6 +88,87 @@
     }
 }
 
+@keyframes cin-loc-bg-drift {
+    0% {
+        background-position: 71% 35%;
+    }
+    100% {
+        background-position: 76% 32%;
+    }
+}
+
+@keyframes cin-dest-float-a {
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0);
+    }
+    50% {
+        transform: translate3d(0, -2px, 0);
+    }
+}
+
+@keyframes cin-dest-float-b {
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0);
+    }
+    50% {
+        transform: translate3d(0, -2.5px, 0);
+    }
+}
+
+@keyframes cin-dest-rim-light {
+    0% {
+        opacity: 0.58;
+    }
+    100% {
+        opacity: 0.88;
+    }
+}
+
+@keyframes cin-dest-carto-drift {
+    0% {
+        background-position: center, center, center, center, center, 0 0;
+    }
+    100% {
+        background-position: center, center, center, 3% -2%, -2% 3%, 4% 2%;
+    }
+}
+
+@keyframes cin-dest-map-parallax {
+    0% {
+        transform: scale(1.04) translate3d(0, 0, 0);
+    }
+    100% {
+        transform: scale(1.055) translate3d(-0.42%, 0.26%, 0);
+    }
+}
+
+@keyframes cin-dest-gleam-shift {
+    0% {
+        opacity: 0.36;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes cin-dest-pin-glow {
+    0% {
+        box-shadow:
+            0 0 0 1px rgba(255, 253, 249, 0.55) inset,
+            0 0 0 2px rgba(196, 165, 116, 0.38),
+            0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+    100% {
+        box-shadow:
+            0 0 0 1px rgba(255, 253, 249, 0.68) inset,
+            0 0 0 2px rgba(196, 165, 116, 0.48),
+            0 4px 14px rgba(0, 0, 0, 0.42),
+            0 0 22px rgba(196, 165, 116, 0.26);
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -111,6 +192,7 @@
 
     .cin-slide__fill-img,
     .cin-slide__grain,
+    .cin-slide__media--location-hero,
     .cin-shell::after,
     .cin-swipe-begin::before {
         animation: none !important;

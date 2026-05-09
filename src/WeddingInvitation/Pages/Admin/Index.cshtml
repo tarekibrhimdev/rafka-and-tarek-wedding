@@ -7,7 +7,7 @@
 <div class="admin-page-header">
     <div>
         <h1 class="admin-page-title">Overview</h1>
-        <p class="admin-page-subtitle text-muted">Quick snapshot of your wedding guest list and RSVPs.</p>
+        <p class="admin-page-subtitle text-muted">Guest list, invitation capacity, and RSVP outcomes for seating and planning.</p>
     </div>
 </div>
 
@@ -26,16 +26,46 @@
             <div class="card-body">
                 <div class="text-muted small text-uppercase fw-semibold letter-spacing">Invitations</div>
                 <div class="display-6 fw-semibold mt-2">@Model.InvitationsIssued</div>
-                <div class="small text-muted mt-1">Links generated</div>
+                <div class="small text-muted mt-1">Unique links generated</div>
             </div>
         </div>
     </div>
     <div class="col-md-4">
         <div class="card admin-card stat-card shadow-sm h-100">
             <div class="card-body">
+                <div class="text-muted small text-uppercase fw-semibold letter-spacing">Seats invited</div>
+                <div class="display-6 fw-semibold mt-2">@Model.SeatsInvited</div>
+                <div class="small text-muted mt-1">Sum of party sizes (max people your invites can cover)</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-md-4">
+        <div class="card admin-card stat-card shadow-sm h-100">
+            <div class="card-body">
                 <div class="text-muted small text-uppercase fw-semibold letter-spacing">RSVP pending</div>
                 <div class="display-6 fw-semibold mt-2">@Model.PendingRsvps</div>
-                <div class="small text-muted mt-1">Awaiting guest response</div>
+                <div class="small text-muted mt-1">Awaiting response</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card admin-card stat-card shadow-sm h-100 border border-success border-opacity-25">
+            <div class="card-body">
+                <div class="text-muted small text-uppercase fw-semibold letter-spacing">Approved</div>
+                <div class="display-6 fw-semibold mt-2 text-success">@Model.ConfirmedAttending</div>
+                <div class="small text-muted mt-1">Confirmed attending (people) · @Model.ApprovedInvitations household@(Model.ApprovedInvitations == 1 ? "" : "s") accepted</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card admin-card stat-card shadow-sm h-100 border border-danger border-opacity-25">
+            <div class="card-body">
+                <div class="text-muted small text-uppercase fw-semibold letter-spacing">Declined</div>
+                <div class="display-6 fw-semibold mt-2 text-danger">@Model.DeclinedInvitations</div>
+                <div class="small text-muted mt-1">Households that responded “not attending”</div>
             </div>
         </div>
     </div>

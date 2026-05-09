@@ -127,7 +127,7 @@
                             <div class="cin-event-cards" data-animate-group>
                                 <article class="cin-event-card" data-animate-child>
                                     <div class="cin-event-card__icon" aria-hidden="true">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.45"><path d="M4 21h16M6 21V10.5l6-4.5 6 4.5V21M9 21v-4h6v4M12 6.5V3M12 3h.01" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21h16M6 21V10.5l6-4.5 6 4.5V21M9 21v-4h6v4M12 6.5V3M12 3h.01" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                     </div>
                                     <div class="cin-event-card__body">
                                         <p class="cin-event-card__kicker">Ceremony</p>
@@ -138,7 +138,7 @@
                                 </article>
                                 <article class="cin-event-card cin-event-card--party" data-animate-child>
                                     <div class="cin-event-card__icon" aria-hidden="true">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.45"><path d="M8 2h8M9 2v6.5c0 2 1.5 3.5 3 3.5s3-1.5 3-3.5V2" stroke-linecap="round" /><path d="M12 12v8M9 22h6" stroke-linecap="round" /><path d="M7.5 8.5h9" stroke-linecap="round" /></svg>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2h8M9 2v6.5c0 2 1.5 3.5 3 3.5s3-1.5 3-3.5V2" stroke-linecap="round" /><path d="M12 12v8M9 22h6" stroke-linecap="round" /><path d="M7.5 8.5h9" stroke-linecap="round" /></svg>
                                     </div>
                                     <div class="cin-event-card__body">
                                         <p class="cin-event-card__kicker">Reception</p>
@@ -185,51 +185,136 @@
 
                     <!-- 6 · Location -->
                     <div class="swiper-slide" data-scene="location" data-progress-label="Location">
-                        <div class="cin-slide__media">
-                            <img class="cin-slide__fill-img" src="images/celebration-arch.png" alt="" loading="lazy" decoding="async" />
-                        </div>
+                        <div
+                            class="cin-slide__media cin-slide__media--location-hero"
+                            style="background-image: url('images/location-couple-hero.png')"
+                            aria-hidden="true"
+                        ></div>
                         <div class="cin-slide__veil"></div>
                         <div class="cin-slide__grain" aria-hidden="true"></div>
                         <div class="cin-slide__inner cin-slide__inner--stack">
                             <p class="cin-eyebrow" data-animate style="text-align: center">Find us</p>
                             <p class="cin-location-lead cin-body" data-animate style="text-align: center; margin-top: 0.45rem; max-width: 20rem; margin-left: auto; margin-right: auto; line-height: 1.5">Ceremony & reception — Beqaa Valley, Lebanon</p>
+                            <p class="cin-location-poetic" data-animate data-i18n-key="cin_location_poetic">An evening beneath the Bekaa sky.</p>
                             <div class="cin-locations">
-                                <article class="cin-location-block" data-animate>
-                                    <p class="cin-location-block__kicker">Ceremony</p>
-                                    <h3 class="cin-location-block__title">Saint Elias Catholic Church</h3>
-                                    <p class="cin-location-block__meta cin-body">Kherbet Qanafar · Lebanon</p>
-                                    <div class="cin-map-frame">
-                                        <iframe
-                                            title="Church location map"
-                                            loading="lazy"
-                                            referrerpolicy="no-referrer-when-downgrade"
-                                            src="https://www.openstreetmap.org/export/embed.html?bbox=35.820%2C33.620%2C35.870%2C33.660&amp;layer=mapnik&amp;marker=33.640%2C35.845"
-                                        ></iframe>
+                                <article class="cin-location-block cin-location-block--ceremony">
+                                    <div class="cin-location-block__surface" data-animate>
+                                        <div class="cin-dest-scene">
+                                            <header class="cin-dest-header">
+                                                <p class="cin-location-block__kicker" data-i18n-key="cin_location_church_kicker">Ceremony</p>
+                                                <h3 class="cin-location-block__title" data-i18n-key="cin_location_church_title">Saint Elias Catholic Church</h3>
+                                                <p class="cin-location-block__meta cin-body" data-i18n-key="cin_location_church_meta">Kherbet Qanafar · Lebanon</p>
+                                            </header>
+                                            <a
+                                                class="cin-dest-frame"
+                                                href="https://www.google.com/maps/search/?api=1&amp;query=Saint+Elias+Catholic+Church+Kherbet+Qanafar+Lebanon"
+                                                data-cin-external-maps
+                                                data-i18n-aria="cin_maps_open_aria"
+                                                rel="noopener noreferrer"
+                                                aria-label="Open this place in Google Maps"
+                                            >
+                                                <div class="cin-dest-card__preview">
+                                                    <img
+                                                        class="cin-dest-card__map"
+                                                        src="https://staticmap.openstreetmap.de/staticmap.php?center=33.640,35.845&amp;zoom=11&amp;size=1280x800&amp;maptype=mapnik"
+                                                        alt=""
+                                                        width="1280"
+                                                        height="800"
+                                                        loading="lazy"
+                                                        decoding="async"
+                                                    />
+                                                    <div class="cin-dest-card__carto" aria-hidden="true"></div>
+                                                    <div class="cin-dest-card__shade" aria-hidden="true"></div>
+                                                    <div class="cin-dest-card__tint" aria-hidden="true"></div>
+                                                    <div class="cin-dest-card__mist" aria-hidden="true"></div>
+                                                    <div class="cin-dest-card__grain" aria-hidden="true"></div>
+                                                    <div class="cin-dest-card__gleam" aria-hidden="true"></div>
+                                                    <span class="cin-dest-card__marker" aria-hidden="true"></span>
+                                                    <span class="cin-dest-card__cta" data-i18n-key="cin_maps_open" aria-hidden="true">Open in Maps</span>
+                                                </div>
+                                            </a>
+                                        </div>
                                     </div>
-                                    <a class="cin-maps-btn" href="https://www.google.com/maps/search/?api=1&amp;query=Saint+Elias+Catholic+Church+Kherbet+Qanafar+Lebanon" target="_blank" rel="noopener noreferrer">Open in Maps</a>
                                 </article>
-                                <article class="cin-location-block" data-animate>
-                                    <p class="cin-location-block__kicker">Reception</p>
-                                    <h3 class="cin-location-block__title">Royal Venue · Kafrayya</h3>
-                                    <p class="cin-location-block__meta cin-body">Western Beqaa · Kafrayya · Lebanon</p>
-                                    <div class="cin-map-frame">
-                                        <iframe
-                                            title="Reception venue map"
-                                            loading="lazy"
-                                            referrerpolicy="no-referrer-when-downgrade"
-                                            src="https://www.openstreetmap.org/export/embed.html?bbox=35.707%2C33.636%2C35.768%2C33.696&amp;layer=mapnik&amp;marker=33.666088%2C35.737484"
-                                        ></iframe>
+                                <article class="cin-location-block cin-location-block--reception">
+                                    <div class="cin-location-block__surface" data-animate>
+                                        <div class="cin-dest-scene">
+                                            <header class="cin-dest-header">
+                                                <p class="cin-location-block__kicker" data-i18n-key="cin_location_venue_kicker">Reception</p>
+                                                <h3 class="cin-location-block__title" data-i18n-key="cin_location_venue_title">Royal Venue · Kafrayya</h3>
+                                                <p class="cin-location-block__meta cin-body" data-i18n-key="cin_location_venue_meta">Western Beqaa · Kafrayya · Lebanon</p>
+                                            </header>
+                                            <a
+                                                class="cin-dest-frame"
+                                                href="https://www.google.com/maps/search/?api=1&amp;query=33.666088%2C35.737484"
+                                                data-cin-external-maps
+                                                data-i18n-aria="cin_maps_open_aria"
+                                                rel="noopener noreferrer"
+                                                aria-label="Open this place in Google Maps"
+                                            >
+                                                <div class="cin-dest-card__preview">
+                                                    <img
+                                                        class="cin-dest-card__map"
+                                                        src="https://staticmap.openstreetmap.de/staticmap.php?center=33.666088,35.737484&amp;zoom=11&amp;size=1280x800&amp;maptype=mapnik"
+                                                        alt=""
+                                                        width="1280"
+                                                        height="800"
+                                                        loading="lazy"
+                                                        decoding="async"
+                                                    />
+                                                    <div class="cin-dest-card__carto" aria-hidden="true"></div>
+                                                    <div class="cin-dest-card__shade" aria-hidden="true"></div>
+                                                    <div class="cin-dest-card__tint" aria-hidden="true"></div>
+                                                    <div class="cin-dest-card__mist" aria-hidden="true"></div>
+                                                    <div class="cin-dest-card__grain" aria-hidden="true"></div>
+                                                    <div class="cin-dest-card__gleam" aria-hidden="true"></div>
+                                                    <span class="cin-dest-card__marker cin-dest-card__marker--offset" aria-hidden="true"></span>
+                                                    <span class="cin-dest-card__cta" data-i18n-key="cin_maps_open" aria-hidden="true">Open in Maps</span>
+                                                </div>
+                                            </a>
+                                        </div>
                                     </div>
-                                    <a class="cin-maps-btn" href="https://www.google.com/maps/search/?api=1&amp;query=33.666088%2C35.737484" target="_blank" rel="noopener noreferrer">Open in Maps</a>
                                 </article>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 7 · RSVP -->
+                    <!-- 7 · Gifts (before RSVP) -->
+                    <div class="swiper-slide" data-scene="gifts" data-progress-label="Gifts">
+                        <div class="cin-slide__media">
+                            <img class="cin-slide__fill-img" src="images/celebration-arch.png" alt="" loading="lazy" decoding="async" />
+                        </div>
+                        <div class="cin-slide__veil cin-slide__veil--soft"></div>
+                        <div class="cin-slide__grain" aria-hidden="true"></div>
+                        <div class="cin-slide__inner cin-slide__inner--center">
+                            <p class="cin-eyebrow" data-animate>Gifts</p>
+                            <p class="cin-body" data-animate style="margin-top: 0.65rem; max-width: 18.5rem; line-height: 1.55">
+                                Your presence is gift enough — if you still wish to spoil us, you may use any of the options below.
+                            </p>
+                            <div class="cin-gifts" data-animate>
+                                <article class="cin-gift-card">
+                                    <p class="cin-gift-card__label">Wish Money</p>
+                                    <p class="cin-gift-card__hint">Account number</p>
+                                    <p class="cin-gift-card__value" dir="ltr" translate="no">20919566-03</p>
+                                </article>
+                                <article class="cin-gift-card">
+                                    <p class="cin-gift-card__label">Phone</p>
+                                    <p class="cin-gift-card__hint">For transfers or to reach us</p>
+                                    <a class="cin-gift-card__value cin-gift-card__value--link" dir="ltr" translate="no" href="tel:+96181646800">81 646 800</a>
+                                </article>
+                                <article class="cin-gift-card">
+                                    <p class="cin-gift-card__label">Western Union</p>
+                                    <p class="cin-gift-card__hint">For guests outside Lebanon — recipient name on the transfer</p>
+                                    <p class="cin-gift-card__value" dir="ltr" translate="no">Tarek Ibrahim</p>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 8 · RSVP -->
                     <div class="swiper-slide" data-scene="rsvp" data-progress-label="RSVP">
                         <div class="cin-slide__media">
-                            <img class="cin-slide__fill-img" src="images/story-embrace.png" alt="" loading="lazy" decoding="async" />
+                            <img class="cin-slide__fill-img" src="images/rsvp-celebration.png" alt="" loading="lazy" decoding="async" />
                         </div>
                         <div class="cin-slide__veil cin-slide__veil--soft"></div>
                         <div class="cin-slide__grain" aria-hidden="true"></div>
@@ -243,7 +328,7 @@
                                 <form class="cin-rsvp-form" id="cin-rsvp-form" novalidate data-cin-rsvp-demo>
                                     <div class="cin-field">
                                         <label for="cin-guest-name">Your name</label>
-                                        <input id="cin-guest-name" name="RsvpName" type="text" autocomplete="name" placeholder="Full name" required maxlength="200" />
+                                        <input id="cin-guest-name" name="RsvpName" type="text" autocomplete="name" value="Alex Guest" placeholder="Full name" required maxlength="200" />
                                     </div>
                                     <div class="cin-field">
                                         <span class="cin-field-label">Attending</span>
@@ -285,33 +370,6 @@
                                     <p class="cin-display-md">Thank you — we’ll be in touch with details.</p>
                                     <p class="cin-body" style="margin-top: 0.75rem">Your place is held in our hearts until the day.</p>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 8 · Gifts -->
-                    <div class="swiper-slide" data-scene="gifts" data-progress-label="Gifts">
-                        <div class="cin-slide__media">
-                            <img class="cin-slide__fill-img" src="images/celebration-arch.png" alt="" loading="lazy" decoding="async" />
-                        </div>
-                        <div class="cin-slide__veil cin-slide__veil--soft"></div>
-                        <div class="cin-slide__grain" aria-hidden="true"></div>
-                        <div class="cin-slide__inner cin-slide__inner--center">
-                            <p class="cin-eyebrow" data-animate>Gifts</p>
-                            <p class="cin-body" data-animate style="margin-top: 0.65rem; max-width: 18.5rem; line-height: 1.55">
-                                Your presence is gift enough — if you still wish to spoil us, you may use either option below.
-                            </p>
-                            <div class="cin-gifts" data-animate>
-                                <article class="cin-gift-card">
-                                    <p class="cin-gift-card__label">Wish Money</p>
-                                    <p class="cin-gift-card__hint">Account number</p>
-                                    <p class="cin-gift-card__value" dir="ltr" translate="no">20919566-03</p>
-                                </article>
-                                <article class="cin-gift-card">
-                                    <p class="cin-gift-card__label">Phone</p>
-                                    <p class="cin-gift-card__hint">For transfers or to reach us</p>
-                                    <a class="cin-gift-card__value cin-gift-card__value--link" dir="ltr" translate="no" href="tel:+96181646800">81 646 800</a>
-                                </article>
                             </div>
                         </div>
                     </div>

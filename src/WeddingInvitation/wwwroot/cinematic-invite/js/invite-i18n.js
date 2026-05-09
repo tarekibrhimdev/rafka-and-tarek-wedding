@@ -79,6 +79,14 @@
                 el.textContent = resolveCopy(k);
             });
 
+            root.querySelectorAll("[data-i18n-aria]").forEach(function (el) {
+                var ka = el.getAttribute("data-i18n-aria");
+                var av = resolveCopy(ka);
+                if (av) {
+                    el.setAttribute("aria-label", av);
+                }
+            });
+
             root.querySelectorAll("[data-i18n-key][data-cap]").forEach(function (el) {
                 var k = el.getAttribute("data-i18n-key");
                 var cap = el.getAttribute("data-cap") || "";

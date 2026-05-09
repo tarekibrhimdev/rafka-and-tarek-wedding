@@ -1,6 +1,8 @@
+using System.IO;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +13,7 @@ namespace WeddingInvitation.Pages;
 public record PartySlotVm(int Index, string Label, string? I18nFormatArg);
 
 [AllowAnonymous]
-public class InviteModel(WeddingDbContext db, IConfiguration configuration) : PageModel
+public class InviteModel(WeddingDbContext db, IConfiguration configuration, IWebHostEnvironment env) : PageModel
 {
     private static readonly JsonSerializerOptions InviteCopyJsonOptions = new()
     {
@@ -39,6 +41,18 @@ public class InviteModel(WeddingDbContext db, IConfiguration configuration) : Pa
     public IReadOnlyList<IReadOnlyList<int?>> CalendarRows { get; private set; } = [];
 
     public int CalendarHighlightDay => HighlightCalendarDay;
+
+    /// <summary>Cache-busted URL for location-slide background (CSS url()).</summary>
+    public string LocationHeroUrl { get; private set; } = string.Empty;
+
+    /// <summary>
+    /// Lightweight static terrain preview (not an embed). Styled in CSS as monochrome editorial art — no Google UI, no iframe.
+    /// </summary>
+    public string ChurchStaticMapPreviewUrl { get; } =
+        "https://staticmap.openstreetmap.de/staticmap.php?center=33.640,35.845&zoom=11&size=1280x800&maptype=mapnik";
+
+    public string VenueStaticMapPreviewUrl { get; } =
+        "https://staticmap.openstreetmap.de/staticmap.php?center=33.666088,35.737484&zoom=11&size=1280x800&maptype=mapnik";
 
     [BindProperty]
     public string RsvpName { get; set; } = "";
@@ -149,6 +163,11 @@ public class InviteModel(WeddingDbContext db, IConfiguration configuration) : Pa
         InviteCopyJson = JsonSerializer.Serialize(allCopy, InviteCopyJsonOptions);
         PartySlots = BuildPartySlots(invitation, CopyEn);
         PartyMax = Math.Max(1, invitation.MaxPersons);
+
+        var heroFs = Path.Combine(env.WebRootPath, "cinematic-invite", "images", "location-couple-hero.png");
+        var heroVer = global::System.IO.File.Exists(heroFs) ? global::System.IO.File.GetLastWriteTimeUtc(heroFs).Ticks : 0L;
+        LocationHeroUrl = $"{Url.Content("~/cinematic-invite/images/location-couple-hero.png")}?v={heroVer}";
+
         return Task.CompletedTask;
     }
 

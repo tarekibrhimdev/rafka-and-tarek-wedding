@@ -30,7 +30,7 @@
                     <tr>
                         <th>Guest</th>
                         <th>Contact</th>
-                        <th class="text-center">Household</th>
+                        <th class="text-center">Persons (total)</th>
                         <th>Invitation</th>
                         <th>RSVP</th>
                         <th class="text-end">Actions</th>
@@ -59,7 +59,10 @@
                             }
                         </td>
                         <td class="text-center">
-                            <span class="badge rounded-pill bg-light text-dark border">@g.FamilyMemberCount @(g.FamilyMemberCount == 1 ? "member" : "members")</span>
+                            <span class="badge rounded-pill bg-light text-dark border"
+                                  title="@(g.FamilyMemberCount == 0 ? "Primary guest only — no additional household members on record." : $"Total headcount: primary guest plus {g.FamilyMemberCount} household member{(g.FamilyMemberCount == 1 ? "" : "s")}.")">
+                                @g.TotalPersonCount @(g.TotalPersonCount == 1 ? "person" : "people")
+                            </span>
                         </td>
                         <td>
                             @if (g.HasInvitation && !string.IsNullOrEmpty(g.InvitationUrl))
@@ -103,6 +106,8 @@
                                 <button type="button"
                                         class="btn btn-sm btn-outline-secondary me-1 btn-generate-invite"
                                         data-guest-id="@g.Id"
+                                        data-suggested-party="@(Math.Min(99, g.TotalPersonCount))"
+                                        data-family-count="@g.FamilyMemberCount"
                                         data-bs-toggle="modal"
                                         data-bs-target="#generateInviteModal">
                                     Generate invite
@@ -282,7 +287,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="small text-muted">Set how many people this single invitation covers (public RSVP will offer from that number down to 1).</p>
+                    <p class="small text-muted">Set how many people this single invitation covers (public RSVP will offer from that number down to 1). Defaults to <strong>you + household</strong> from the guest record.</p>
+                    <p class="small text-muted mb-2 d-none" id="generatePartyHint" aria-live="polite"></p>
                     <label asp-for="MaxPersons" class="form-label">Party size</label>
                     <input asp-for="MaxPersons" class="form-control" type="number" min="1" max="99" id="generateMaxPersons" />
                     <span asp-validation-for="MaxPersons" class="text-danger small"></span>
@@ -365,10 +371,30 @@
             document.querySelectorAll('.btn-generate-invite, .btn-regenerate-invite').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.getElementById('generateGuestId').value = btn.getAttribute('data-guest-id');
-                    const max = btn.getAttribute('data-max');
                     const mp = document.getElementById('generateMaxPersons');
-                    if (max && mp) mp.value = max;
-                    else if (mp) mp.value = 2;
+                    const hint = document.getElementById('generatePartyHint');
+                    if (btn.classList.contains('btn-regenerate-invite')) {
+                        const max = btn.getAttribute('data-max');
+                        if (mp) mp.value = max && max !== '0' ? max : '2';
+                        if (hint) {
+                            hint.classList.add('d-none');
+                            hint.textContent = '';
+                        }
+                    } else {
+                        const suggested = btn.getAttribute('data-suggested-party');
+                        const family = btn.getAttribute('data-family-count');
+                        if (mp) mp.value = suggested && suggested !== '' ? suggested : '1';
+                        if (hint) {
+                            const f = family !== null && family !== '' ? parseInt(family, 10) : NaN;
+                            if (!Number.isNaN(f) && f > 0) {
+                                hint.textContent = 'Suggested ' + (parseInt(suggested, 10) || 1) + ' = primary guest + ' + f + ' household member' + (f === 1 ? '' : 's') + '. You can raise or lower this if needed.';
+                                hint.classList.remove('d-none');
+                            } else {
+                                hint.textContent = 'Suggested ' + (parseInt(suggested, 10) || 1) + ' (primary guest only). Add household members on the guest record to increase the default.';
+                                hint.classList.remove('d-none');
+                            }
+                        }
+                    }
                     const title = document.getElementById('generateInviteTitle');
                     const submit = document.getElementById('generateSubmitBtn');
                     if (btn.classList.contains('btn-regenerate-invite')) {

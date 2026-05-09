@@ -468,6 +468,128 @@ body {
     );
 }
 
+/* Location — full-bleed photo: always cover viewport (no letterboxing / ink bars) */
+.cin-slide__media--location-hero {
+    background-size: cover;
+    background-position: 72% 36%;
+    background-repeat: no-repeat;
+    background-color: var(--cin-ink);
+    min-width: 100%;
+    min-height: 100%;
+}
+
+.cin-slide__media--location-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 88% 70% at 50% 40%, transparent 22%, rgba(6, 5, 5, 0.32) 100%),
+        radial-gradient(ellipse 115% 85% at 50% 105%, rgba(10, 9, 8, 0.38) 0%, transparent 52%);
+    mix-blend-mode: multiply;
+    opacity: 0.72;
+}
+
+/* Location — readability over photo (lighter base so photography stays “alive” full-bleed) */
+.swiper-slide[data-scene="location"] .cin-slide__veil {
+    background:
+        linear-gradient(180deg, rgba(12, 10, 9, 0.6) 0%, transparent 26%),
+        linear-gradient(0deg, rgba(10, 9, 8, 0.46) 0%, transparent 36%),
+        linear-gradient(
+            180deg,
+            var(--cin-veil-top) 0%,
+            transparent 20%,
+            rgba(18, 16, 14, 0.34) 52%,
+            var(--cin-veil-base) 100%
+        ),
+        radial-gradient(ellipse 108% 75% at 50% 38%, rgba(6, 5, 5, 0.36) 0%, transparent 58%),
+        radial-gradient(ellipse 130% 96% at 50% 50%, transparent 38%, rgba(8, 7, 6, 0.16) 100%);
+    box-shadow: inset 0 0 88px rgba(5, 4, 4, 0.22);
+    backdrop-filter: blur(0.6px) saturate(106%);
+    -webkit-backdrop-filter: blur(0.6px) saturate(106%);
+}
+
+.swiper-slide[data-scene="location"] .cin-slide__grain {
+    mix-blend-mode: soft-light;
+    opacity: 0.72;
+    animation-duration: 20s;
+}
+
+/* RSVP — full-bleed celebration photo: stronger veil + type for white copy and fields */
+.swiper-slide[data-scene="rsvp"] .cin-slide__veil--soft {
+    background:
+        linear-gradient(180deg, rgba(14, 12, 11, 0.32) 0%, transparent 28%),
+        linear-gradient(0deg, rgba(12, 10, 9, 0.36) 0%, transparent 42%),
+        linear-gradient(
+            180deg,
+            rgba(20, 18, 16, 0.08) 0%,
+            transparent 18%,
+            rgba(14, 12, 11, 0.38) 46%,
+            rgba(6, 5, 5, 0.58) 100%
+        ),
+        radial-gradient(ellipse 98% 74% at 50% 40%, rgba(8, 7, 6, 0.34) 0%, transparent 66%);
+    box-shadow: inset 0 0 64px rgba(5, 4, 4, 0.14);
+}
+
+.swiper-slide[data-scene="rsvp"] .cin-eyebrow {
+    color: rgba(232, 220, 188, 0.98);
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.68),
+        0 2px 18px rgba(0, 0, 0, 0.48);
+}
+
+.swiper-slide[data-scene="rsvp"] .cin-display-lg {
+    color: rgba(255, 253, 249, 0.98);
+    text-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.58),
+        0 2px 22px rgba(0, 0, 0, 0.44),
+        0 0 44px rgba(0, 0, 0, 0.22);
+}
+
+/* RSVP — “Kindly reply” must sit below fixed chrome (Save the date + language); scroll when tall */
+.swiper-slide[data-scene="rsvp"] .cin-slide__inner--center {
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: calc(var(--cin-safe-top) + 6.05rem);
+    padding-bottom: calc(var(--cin-safe-bottom) + 6.35rem);
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
+}
+
+.swiper-slide[data-scene="rsvp"] .cin-rsvp {
+    position: relative;
+    width: 100%;
+    max-width: 21.5rem;
+    margin-top: 0.35rem;
+    padding: 1rem 1rem 1.2rem;
+    border-radius: 22px;
+    box-sizing: border-box;
+}
+
+.swiper-slide[data-scene="rsvp"] .cin-rsvp::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: rgba(8, 7, 6, 0.28);
+    border: 1px solid rgba(255, 253, 249, 0.18);
+    box-shadow:
+        0 10px 32px rgba(0, 0, 0, 0.16),
+        inset 0 1px 0 rgba(255, 253, 249, 0.07);
+    backdrop-filter: blur(10px) saturate(106%);
+    -webkit-backdrop-filter: blur(10px) saturate(106%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.swiper-slide[data-scene="rsvp"] .cin-rsvp > * {
+    position: relative;
+    z-index: 1;
+}
+
 /* Opening hero — readability on bright photos; header already shows “Save the date” */
 .swiper-slide[data-scene="opening"] .cin-slide__veil {
     box-shadow:
@@ -586,8 +708,9 @@ body {
 .swiper-slide[data-scene="location"] .cin-slide__inner--stack {
     justify-content: flex-start;
     min-height: 0;
-    padding-top: calc(var(--cin-safe-top) + 5.85rem);
-    padding-bottom: calc(var(--cin-safe-bottom) + 7.75rem);
+    gap: 1.45rem;
+    padding-top: calc(var(--cin-safe-top) + 5.35rem);
+    padding-bottom: calc(var(--cin-safe-bottom) + 6.25rem);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
@@ -874,7 +997,7 @@ body {
 
 .cin-event-card {
     display: grid;
-    grid-template-columns: 50px 1fr;
+    grid-template-columns: 52px 1fr;
     gap: 1rem 1.1rem;
     align-items: start;
     padding: 1.25rem 1.2rem 1.3rem;
@@ -893,18 +1016,33 @@ body {
 }
 
 .cin-event-card__icon {
-    width: 50px;
-    height: 50px;
+    width: 52px;
+    height: 52px;
     border-radius: 14px;
     display: grid;
     place-items: center;
-    background: rgba(255, 253, 249, 0.1);
-    color: var(--cin-champagne);
+    flex-shrink: 0;
+    background: linear-gradient(152deg, rgba(24, 20, 17, 0.72) 0%, rgba(38, 32, 26, 0.55) 100%);
+    border: 1px solid rgba(212, 184, 142, 0.45);
+    color: #f0e0c8;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 253, 249, 0.14),
+        0 4px 16px rgba(0, 0, 0, 0.28);
 }
 
 .cin-event-card__icon svg {
-    width: 24px;
-    height: 24px;
+    width: 27px;
+    height: 27px;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 10px rgba(196, 165, 116, 0.35));
+}
+
+.cin-event-card__icon svg :is(path, line, circle, ellipse, polyline, polygon) {
+    stroke-width: 2.05;
+}
+
+.cin-event-card--party .cin-event-card__icon {
+    border-color: rgba(235, 212, 170, 0.5);
+    color: #f5e6d0;
 }
 
 .cin-event-card__body {
@@ -1083,138 +1221,616 @@ body {
     background: var(--cin-champagne);
 }
 
-/* Location */
-.cin-map-frame {
-    margin-top: 1.25rem;
-    border-radius: var(--cin-radius-lg);
-    overflow: hidden;
-    border: 1px solid var(--cin-frost-border);
-    aspect-ratio: 4 / 3;
-    background: rgba(0, 0, 0, 0.2);
-}
-
-.cin-map-frame iframe {
-    width: 100%;
-    height: 100%;
-    border: 0;
-    filter: grayscale(0.25) contrast(1.02);
-    opacity: 0.92;
-}
-
-.cin-maps-btn {
-    margin-top: 1rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    width: 100%;
-    padding: 0.95rem 1.2rem;
-    border-radius: var(--cin-radius-pill);
-    border: 1px solid rgba(196, 165, 116, 0.35);
-    font-family: var(--cin-font-ui);
-    font-size: 0.65rem;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    text-decoration: none;
-    color: var(--cin-ivory);
-    background: rgba(196, 165, 116, 0.12);
-    transition:
-        background 0.3s var(--cin-ease-soft),
-        transform 0.15s ease;
-}
-
-.cin-maps-btn:active {
-    transform: scale(0.98);
+/* Location — cinematic destination scenes (static bitmap only; Maps opens externally via window.open) */
+.cin-location-poetic {
+    margin: 0.75rem auto 0;
+    max-width: 18.5rem;
+    padding: 0 0.75rem;
+    font-family: var(--cin-font-display);
+    font-size: 0.86rem;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.55;
+    letter-spacing: 0.048em;
+    text-align: center;
+    color: rgba(252, 250, 246, 0.78);
+    text-shadow:
+        0 1px 18px rgba(0, 0, 0, 0.45),
+        0 2px 42px rgba(8, 7, 6, 0.35);
 }
 
 .cin-locations {
     display: flex;
     flex-direction: column;
-    gap: 1.65rem;
-    margin-top: 1rem;
+    gap: 2.15rem;
+    margin-top: 1.05rem;
     width: 100%;
-    max-width: 22rem;
+    max-width: 16.25rem;
     margin-left: auto;
     margin-right: auto;
-    padding-bottom: 0.25rem;
+    padding-bottom: 0.65rem;
 }
 
 .cin-location-block {
+    width: 100%;
     text-align: center;
 }
 
+.cin-location-block__surface {
+    width: 100%;
+}
+
+.cin-location-block--ceremony {
+    text-align: start;
+}
+
+.cin-location-block--reception {
+    text-align: end;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .swiper-slide[data-scene="location"].swiper-slide-active .cin-location-block--ceremony {
+        animation: cin-dest-float-a 11s ease-in-out infinite alternate;
+    }
+
+    .swiper-slide[data-scene="location"].swiper-slide-active .cin-location-block--reception {
+        animation: cin-dest-float-b 13s ease-in-out infinite alternate;
+    }
+}
+
+/* One “scene” per place: editorial header, then immersive map plate */
+.cin-dest-scene {
+    display: flex;
+    flex-direction: column;
+    gap: 1.32rem;
+    width: 100%;
+}
+
+.cin-dest-header {
+    margin: 0;
+    padding: 0 0.12rem;
+}
+
 .cin-location-block__kicker {
-    margin: 0 0 0.4rem;
+    margin: 0 0 0.42rem;
     font-family: var(--cin-font-ui);
-    font-size: 0.52rem;
+    font-size: 0.46rem;
     font-weight: 600;
-    letter-spacing: 0.22em;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
-    color: var(--cin-champagne);
+    color: rgba(196, 165, 116, 0.78);
 }
 
 .cin-location-block__title {
     margin: 0;
     font-family: var(--cin-font-display);
-    font-size: clamp(1.15rem, 4.2vw, 1.48rem);
+    font-size: clamp(1.18rem, 4.4vw, 1.52rem);
     font-style: italic;
     font-weight: 400;
-    line-height: 1.28;
-    color: var(--cin-ivory);
+    line-height: 1.2;
+    letter-spacing: 0.012em;
+    color: rgba(252, 250, 246, 0.98);
+    text-shadow:
+        0 2px 28px rgba(0, 0, 0, 0.42),
+        0 1px 2px rgba(0, 0, 0, 0.35);
 }
 
 .cin-location-block__meta {
-    margin: 0.45rem 0 0;
-    font-size: 0.8rem;
-    line-height: 1.45;
-    color: rgba(250, 248, 244, 0.82);
+    margin: 0.58rem 0 0;
+    max-width: 15.75rem;
+    font-size: 0.7rem;
+    line-height: 1.48;
+    letter-spacing: 0.04em;
+    color: rgba(240, 235, 228, 0.62);
+    text-shadow: 0 1px 14px rgba(0, 0, 0, 0.35);
 }
 
-.cin-location-block .cin-map-frame {
-    margin-top: 0.85rem;
+.cin-location-block--reception .cin-location-block__meta {
+    margin-left: auto;
 }
 
-.cin-location-block .cin-maps-btn {
-    margin-top: 0.75rem;
-}
-
-/* Location maps — tone down bright OSM tiles to match dark cinematic UI */
-.swiper-slide[data-scene="location"] .cin-map-frame {
-    aspect-ratio: 16 / 10;
-    max-height: min(38vh, 220px);
+/* Hit target: opens Google Maps in a new window (no embed, no Maps UI in-invite) */
+.cin-dest-frame {
     position: relative;
+    display: block;
+    margin: 0;
+    padding: 0.34rem 0.36rem 0.38rem;
+    isolation: isolate;
+    border-radius: calc(var(--cin-radius-lg) + 8px);
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    touch-action: manipulation;
+    background: linear-gradient(168deg, rgba(255, 253, 249, 0.1) 0%, rgba(18, 15, 13, 0.52) 46%, rgba(12, 10, 9, 0.58) 100%);
+    border: 1px solid rgba(196, 165, 116, 0.24);
     box-shadow:
-        inset 0 0 0 1px rgba(255, 253, 249, 0.1),
-        inset 0 0 48px rgba(8, 7, 6, 0.42);
+        0 22px 56px rgba(4, 3, 3, 0.5),
+        0 0 0 1px rgba(255, 253, 249, 0.05) inset,
+        0 10px 28px rgba(196, 165, 116, 0.035),
+        inset 0 1px 0 rgba(255, 253, 249, 0.11),
+        inset 0 -18px 40px rgba(6, 5, 4, 0.32);
+    backdrop-filter: blur(22px) saturate(120%);
+    -webkit-backdrop-filter: blur(22px) saturate(120%);
+    transition:
+        border-color 0.45s var(--cin-ease-soft),
+        box-shadow 0.55s var(--cin-ease-soft),
+        opacity 0.35s ease,
+        transform 0.55s var(--cin-ease-soft);
 }
 
-.swiper-slide[data-scene="location"] .cin-map-frame::after {
+.cin-dest-frame::before {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border-radius: calc(var(--cin-radius-lg) + 6px);
+    pointer-events: none;
+    z-index: 0;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 253, 249, 0.16),
+        inset 0 0 48px rgba(255, 253, 249, 0.03);
+}
+
+.cin-dest-frame::after {
     content: "";
     position: absolute;
     inset: 0;
-    pointer-events: none;
     border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+    background:
+        radial-gradient(ellipse 92% 58% at 50% -8%, rgba(255, 253, 249, 0.16), transparent 58%),
+        radial-gradient(ellipse 55% 42% at 92% 88%, rgba(196, 165, 116, 0.1), transparent 62%);
+    opacity: 0.72;
+}
+
+.cin-dest-frame > .cin-dest-card__preview {
+    position: relative;
     z-index: 1;
-    box-shadow: inset 0 0 36px rgba(4, 3, 3, 0.65);
 }
 
-.swiper-slide[data-scene="location"] .cin-map-frame iframe {
-    filter: grayscale(0.55) brightness(0.62) contrast(1.12) saturate(0.82);
-    opacity: 1;
+@media (prefers-reduced-motion: no-preference) {
+    .swiper-slide[data-scene="location"].swiper-slide-active .cin-dest-frame::after {
+        animation: cin-dest-rim-light 18s var(--cin-ease-cinematic) infinite alternate;
+    }
 }
 
-.swiper-slide[data-scene="location"] .cin-locations {
-    gap: 1.35rem;
+@media (hover: hover) {
+    .cin-dest-frame:hover {
+        border-color: rgba(196, 165, 116, 0.38);
+        box-shadow:
+            0 32px 72px rgba(4, 3, 3, 0.55),
+            0 0 56px rgba(196, 165, 116, 0.09),
+            0 0 0 1px rgba(255, 253, 249, 0.07) inset,
+            inset 0 1px 0 rgba(255, 253, 249, 0.11);
+    }
+
+    .cin-dest-frame:hover .cin-dest-card__map {
+        filter: grayscale(1) contrast(1.08) brightness(0.68) sepia(0.34);
+        transform: scale(1.05);
+    }
+
+    .cin-dest-frame:hover .cin-dest-card__cta {
+        border-top-color: rgba(232, 210, 170, 0.42);
+        box-shadow:
+            inset 0 1px 0 rgba(255, 253, 249, 0.18),
+            0 -12px 40px rgba(0, 0, 0, 0.28),
+            0 0 52px rgba(196, 165, 116, 0.12);
+    }
 }
 
-@media (max-height: 700px) {
-    .swiper-slide[data-scene="location"] .cin-map-frame {
-        max-height: min(32vh, 190px);
+.cin-dest-frame:active {
+    transform: scale(0.987);
+    opacity: 0.94;
+}
+
+.cin-dest-frame:focus-visible {
+    outline: none;
+    border-color: rgba(196, 165, 116, 0.52);
+    box-shadow:
+        0 0 0 1px rgba(196, 165, 116, 0.38),
+        0 26px 64px rgba(4, 3, 3, 0.52);
+}
+
+.cin-dest-card__preview {
+    position: relative;
+    width: 100%;
+    border-radius: calc(var(--cin-radius-lg) + 2px);
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
+    max-height: min(22vh, 158px);
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 253, 249, 0.1),
+        inset 0 0 42px rgba(22, 18, 15, 0.36),
+        inset 0 -22px 44px rgba(8, 7, 6, 0.4),
+        0 12px 32px rgba(0, 0, 0, 0.46);
+}
+
+.cin-dest-card__preview::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 7;
+    pointer-events: none;
+    background: linear-gradient(195deg, rgba(255, 253, 249, 0.12) 0%, transparent 32%, transparent 58%, transparent 100%);
+    mix-blend-mode: soft-light;
+    opacity: 0.55;
+}
+
+.cin-dest-card__preview::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    pointer-events: none;
+    background: linear-gradient(82deg, transparent 40%, rgba(255, 253, 249, 0.04) 49.5%, transparent 58%);
+    mix-blend-mode: overlay;
+    opacity: 0.65;
+}
+
+/* Stylized cartography — soft contours & implied routes (not readable as a nav map) */
+.cin-dest-card__carto {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.38;
+    mix-blend-mode: soft-light;
+    background-image:
+        radial-gradient(ellipse 110% 78% at 38% 58%, transparent 50%, rgba(252, 250, 246, 0.07) 51%, transparent 52%),
+        radial-gradient(ellipse 95% 70% at 72% 34%, transparent 54%, rgba(196, 165, 116, 0.1) 55.5%, transparent 57%),
+        radial-gradient(ellipse 70% 55% at 22% 28%, transparent 60%, rgba(255, 253, 249, 0.05) 61%, transparent 62%),
+        linear-gradient(118deg, transparent 46%, rgba(255, 253, 249, 0.065) 49.2%, transparent 52%),
+        linear-gradient(12deg, transparent 58%, rgba(255, 253, 249, 0.05) 60.5%, transparent 63%),
+        repeating-linear-gradient(
+            156deg,
+            transparent 0 22px,
+            rgba(255, 253, 249, 0.04) 22px 23px,
+            transparent 23px 48px
+        );
+    background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 200% 200%;
+    background-position: center, center, center, center, center, 0 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .swiper-slide[data-scene="location"].swiper-slide-active .cin-dest-card__carto {
+        animation: cin-dest-carto-drift 48s var(--cin-ease-cinematic) infinite alternate;
+    }
+}
+
+/* Raw tiles stay monochrome; carto + tint sell “place” without UI clutter */
+.cin-dest-card__map {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 48% center;
+    filter: grayscale(1) contrast(1.11) brightness(0.64) sepia(0.34);
+    transform: scale(1.04);
+    transition: filter 0.65s var(--cin-ease-soft), transform 9s var(--cin-ease-cinematic);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .swiper-slide[data-scene="location"].swiper-slide-active .cin-dest-card__map {
+        animation: cin-dest-map-parallax 42s var(--cin-ease-cinematic) infinite alternate;
+    }
+}
+
+.cin-location-block--reception .cin-dest-card__map {
+    object-position: 58% center;
+}
+
+.cin-dest-card__shade {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(
+        185deg,
+        rgba(22, 19, 17, 0.32) 0%,
+        transparent 34%,
+        transparent 50%,
+        rgba(6, 5, 5, 0.72) 100%
+    );
+}
+
+.cin-dest-card__tint {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    mix-blend-mode: soft-light;
+    opacity: 0.82;
+    background: linear-gradient(
+        148deg,
+        rgba(224, 202, 168, 0.2) 0%,
+        rgba(108, 92, 74, 0.14) 45%,
+        rgba(42, 36, 30, 0.38) 100%
+    );
+}
+
+.cin-dest-card__mist {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    background: radial-gradient(ellipse 88% 74% at 50% 46%, transparent 26%, rgba(18, 15, 13, 0.42) 100%);
+    opacity: 0.48;
+}
+
+.cin-dest-card__grain {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0.12;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    background-size: 100px 100px;
+}
+
+.cin-dest-card__gleam {
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    pointer-events: none;
+    opacity: 0.42;
+    background: linear-gradient(
+        118deg,
+        transparent 30%,
+        rgba(255, 253, 249, 0.08) 48%,
+        transparent 63%
+    );
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .swiper-slide[data-scene="location"].swiper-slide-active .cin-dest-card__gleam {
+        animation: cin-dest-gleam-shift 22s ease-in-out infinite alternate;
+    }
+}
+
+/* Cinematic location pin — champagne metal, not a flat dot */
+.cin-dest-card__marker {
+    position: absolute;
+    left: 50%;
+    top: 43%;
+    z-index: 9;
+    width: 22px;
+    height: 28px;
+    margin: -26px 0 0 -11px;
+    pointer-events: none;
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.48)) drop-shadow(0 0 10px rgba(196, 165, 116, 0.24));
+}
+
+.cin-dest-card__marker::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 14px;
+    height: 14px;
+    margin-left: -7px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 32% 28%, rgba(255, 253, 249, 0.95), rgba(212, 184, 150, 0.95) 42%, #9a7d52 88%, #5c4a32 100%);
+    box-shadow:
+        0 0 0 1px rgba(255, 253, 249, 0.55) inset,
+        0 0 0 2px rgba(196, 165, 116, 0.38),
+        0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.cin-dest-card__marker::after {
+    content: "";
+    position: absolute;
+    top: 11px;
+    left: 50%;
+    width: 9px;
+    height: 13px;
+    margin-left: -4.5px;
+    background: linear-gradient(180deg, #bc9b6e 0%, #6b563c 72%, #3d3124 100%);
+    clip-path: polygon(50% 100%, 0 0, 100% 0);
+    opacity: 0.97;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+.cin-dest-card__marker--offset {
+    left: 54%;
+    top: 41%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .swiper-slide[data-scene="location"].swiper-slide-active .cin-dest-card__marker::before {
+        animation: cin-dest-pin-glow 9s ease-in-out infinite alternate;
+    }
+}
+
+/* Integrated glass action dock — reads as part of the plate, not a loose pill */
+.cin-dest-card__cta {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.38rem 0.75rem 0.36rem;
+    border-radius: 0 0 calc(var(--cin-radius-lg) + 2px) calc(var(--cin-radius-lg) + 2px);
+    border: none;
+    border-top: 1px solid rgba(196, 165, 116, 0.22);
+    font-family: var(--cin-font-ui);
+    font-size: 0.38rem;
+    font-weight: 600;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: rgba(252, 250, 246, 0.92);
+    background: linear-gradient(180deg, rgba(14, 12, 11, 0.08) 0%, rgba(12, 10, 9, 0.62) 100%);
+    backdrop-filter: blur(16px) saturate(125%);
+    -webkit-backdrop-filter: blur(16px) saturate(125%);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 253, 249, 0.1),
+        0 -12px 36px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    transition:
+        border-color 0.4s var(--cin-ease-soft),
+        box-shadow 0.45s var(--cin-ease-soft),
+        background 0.45s var(--cin-ease-soft),
+        opacity 0.35s ease;
+}
+
+.cin-location-block--ceremony .cin-dest-card__cta,
+.cin-location-block--reception .cin-dest-card__cta {
+    left: 0;
+    right: 0;
+    transform: none;
+}
+
+.swiper-slide[data-scene="location"] .cin-eyebrow {
+    margin-bottom: 0.12rem;
+    color: rgba(232, 214, 175, 0.98);
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.68),
+        0 2px 20px rgba(0, 0, 0, 0.48);
+}
+
+.swiper-slide[data-scene="location"] .cin-location-lead {
+    margin-top: 0.28rem !important;
+    font-size: 0.74rem;
+    font-weight: 500;
+    line-height: 1.52;
+    letter-spacing: 0.042em;
+    color: rgba(255, 253, 249, 0.9);
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.58),
+        0 2px 18px rgba(0, 0, 0, 0.42);
+}
+
+.swiper-slide[data-scene="location"] .cin-location-poetic {
+    color: rgba(255, 253, 249, 0.9);
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.55),
+        0 2px 24px rgba(0, 0, 0, 0.42),
+        0 0 36px rgba(0, 0, 0, 0.22);
+}
+
+.swiper-slide[data-scene="location"] .cin-location-block__kicker {
+    margin-bottom: 0.36rem;
+    color: rgba(218, 198, 152, 0.96);
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.55),
+        0 0 14px rgba(0, 0, 0, 0.35);
+}
+
+.swiper-slide[data-scene="location"] .cin-location-block__title {
+    text-shadow:
+        0 2px 32px rgba(0, 0, 0, 0.52),
+        0 1px 3px rgba(0, 0, 0, 0.48);
+}
+
+.swiper-slide[data-scene="location"] .cin-location-block__meta {
+    margin-top: 0.48rem;
+    font-size: 0.74rem;
+    font-weight: 500;
+    color: rgba(252, 250, 246, 0.84);
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.52),
+        0 2px 16px rgba(0, 0, 0, 0.38);
+}
+
+/* Glass map plate — a bit clearer so the couple shows through; CTA easier to read */
+.swiper-slide[data-scene="location"] .cin-dest-frame {
+    background: linear-gradient(168deg, rgba(255, 253, 249, 0.14) 0%, rgba(18, 15, 13, 0.34) 46%, rgba(12, 10, 9, 0.4) 100%);
+    box-shadow:
+        0 18px 48px rgba(4, 3, 3, 0.38),
+        0 0 0 1px rgba(255, 253, 249, 0.06) inset,
+        0 10px 28px rgba(196, 165, 116, 0.028),
+        inset 0 1px 0 rgba(255, 253, 249, 0.12),
+        inset 0 -18px 40px rgba(6, 5, 4, 0.22);
+    backdrop-filter: blur(14px) saturate(116%);
+    -webkit-backdrop-filter: blur(14px) saturate(116%);
+}
+
+.swiper-slide[data-scene="location"] .cin-dest-frame::after {
+    opacity: 0.52;
+}
+
+.swiper-slide[data-scene="location"] .cin-dest-card__preview {
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 253, 249, 0.1),
+        inset 0 0 42px rgba(22, 18, 15, 0.22),
+        inset 0 -22px 44px rgba(8, 7, 6, 0.26),
+        0 12px 32px rgba(0, 0, 0, 0.32);
+}
+
+.swiper-slide[data-scene="location"] .cin-dest-card__map {
+    filter: grayscale(1) contrast(1.08) brightness(0.72) sepia(0.3);
+}
+
+.swiper-slide[data-scene="location"] .cin-dest-card__shade {
+    background: linear-gradient(
+        185deg,
+        rgba(22, 19, 17, 0.22) 0%,
+        transparent 34%,
+        transparent 50%,
+        rgba(6, 5, 5, 0.5) 100%
+    );
+}
+
+.swiper-slide[data-scene="location"] .cin-dest-card__tint {
+    opacity: 0.64;
+}
+
+.swiper-slide[data-scene="location"] .cin-dest-card__mist {
+    opacity: 0.32;
+}
+
+.swiper-slide[data-scene="location"] .cin-dest-card__cta {
+    font-size: 0.42rem;
+    letter-spacing: 0.3em;
+    color: rgba(255, 253, 249, 0.96);
+    background: linear-gradient(180deg, rgba(14, 12, 11, 0.06) 0%, rgba(12, 10, 9, 0.44) 100%);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+}
+
+/* Fixed “Save the date” — stronger on bright location photography */
+.cin-shell:has(.swiper-slide-active[data-scene="location"]) .cin-brand-mark__inner {
+    color: rgba(36, 32, 28, 0.9);
+    text-shadow:
+        0 1px 0 rgba(255, 253, 249, 0.88),
+        0 1px 3px rgba(0, 0, 0, 0.32);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .swiper-slide[data-scene="location"].swiper-slide-active .cin-slide__media--location-hero {
+        animation: cin-loc-bg-drift 52s var(--cin-ease-cinematic) infinite alternate;
+    }
+
+    .swiper-slide[data-scene="location"]:not(.swiper-slide-active) .cin-slide__media--location-hero {
+        animation: none;
+    }
+}
+
+@media (max-height: 680px) {
+    .swiper-slide[data-scene="location"] .cin-slide__inner--stack {
+        padding-top: calc(var(--cin-safe-top) + 5.1rem);
+        padding-bottom: calc(var(--cin-safe-bottom) + 5.85rem);
+        gap: 1rem;
     }
 
     .swiper-slide[data-scene="location"] .cin-locations {
-        gap: 1.15rem;
+        gap: 1.65rem;
+        margin-top: 0.75rem;
+    }
+
+    .swiper-slide[data-scene="location"] .cin-dest-card__preview {
+        max-height: min(18vh, 132px);
+    }
+
+    .swiper-slide[data-scene="location"] .cin-dest-frame {
+        padding: 0.3rem 0.32rem 0.34rem;
+    }
+
+    .swiper-slide[data-scene="location"] .cin-dest-scene {
+        gap: 0.95rem;
     }
 }
 
@@ -1545,6 +2161,116 @@ body {
 
 .cin-rsvp.is-sent .cin-rsvp-form {
     display: none;
+}
+
+.swiper-slide[data-scene="rsvp"] .cin-rsvp-form {
+    margin-top: 0.85rem;
+}
+
+.swiper-slide[data-scene="rsvp"] .cin-rsvp__success {
+    margin-top: 1.35rem;
+}
+
+.swiper-slide[data-scene="rsvp"] .cin-field-label,
+.swiper-slide[data-scene="rsvp"] .cin-field label,
+.swiper-slide[data-scene="rsvp"] .cin-rsvp-party legend {
+    font-size: 0.46rem;
+    letter-spacing: 0.17em;
+    margin-bottom: 0.34rem;
+    color: rgba(255, 253, 249, 0.92);
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.58),
+        0 0 14px rgba(0, 0, 0, 0.38);
+}
+
+.swiper-slide[data-scene="rsvp"] .cin-rsvp-party-cap {
+    font-size: 0.6rem;
+    letter-spacing: 0.05em;
+    color: rgba(255, 253, 249, 0.86);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.52);
+    margin-bottom: 0.62rem;
+}
+
+.swiper-slide[data-scene="rsvp"] .cin-rsvp-party__list {
+    gap: 0.38rem;
+}
+
+/* LTR (static demo + English invite): name reads first, checkbox at the end; Arabic keeps DOM order */
+.swiper-slide[data-scene="rsvp"] .cin-rsvp-party__row {
+    flex-direction: row-reverse;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.4rem 0.68rem;
+    border-radius: 11px;
+    background: rgba(5, 4, 4, 0.34);
+    border: 2px solid rgba(255, 253, 249, 0.32);
+    box-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.14),
+        inset 0 1px 0 rgba(255, 253, 249, 0.08);
+    font-size: 0.9rem;
+    line-height: 1.28;
+    color: rgba(255, 253, 249, 0.98);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+}
+
+#invite-root.lang-ar .swiper-slide[data-scene="rsvp"] .cin-rsvp-party__row {
+    flex-direction: row;
+}
+
+.swiper-slide[data-scene="rsvp"] .cin-field input,
+.swiper-slide[data-scene="rsvp"] .cin-field select {
+    padding: 0.68rem 0.88rem;
+    font-size: 0.96rem;
+    border-radius: 12px;
+    border: 2px solid rgba(255, 253, 249, 0.52);
+    background: rgba(12, 10, 9, 0.32);
+    color: rgba(255, 253, 249, 0.98);
+    box-shadow:
+        0 2px 12px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(0, 0, 0, 0.12);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.48);
+}
+
+.swiper-slide[data-scene="rsvp"] .cin-field input::placeholder {
+    color: rgba(255, 253, 249, 0.48);
+}
+
+.swiper-slide[data-scene="rsvp"] .cin-field input:focus,
+.swiper-slide[data-scene="rsvp"] .cin-field select:focus {
+    border-color: rgba(210, 190, 155, 0.72);
+    background: rgba(10, 9, 8, 0.44);
+}
+
+.swiper-slide[data-scene="rsvp"] .cin-rsvp-attend-opt span {
+    padding: 0.62rem 0.48rem;
+    border-radius: 12px;
+    font-size: 0.76rem;
+    border: 2px solid rgba(255, 253, 249, 0.5);
+    background: rgba(12, 10, 9, 0.32);
+    color: rgba(255, 253, 249, 0.96);
+    box-shadow:
+        0 2px 12px rgba(0, 0, 0, 0.18),
+        0 0 0 1px rgba(0, 0, 0, 0.12);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.48);
+}
+
+.swiper-slide[data-scene="rsvp"] .cin-rsvp-attend-opt input:checked + span {
+    border-color: rgba(220, 200, 165, 0.78);
+    background: rgba(196, 165, 116, 0.18);
+    color: rgba(255, 253, 249, 0.99);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.52);
+}
+
+.swiper-slide[data-scene="rsvp"] .cin-rsvp-party__row input {
+    margin-top: 0;
+    width: 1rem;
+    height: 1rem;
+    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.85));
+}
+
+.swiper-slide[data-scene="rsvp"] .cin-rsvp__validation ul,
+.swiper-slide[data-scene="rsvp"] .cin-rsvp__client-err {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
 }
 
 /* Chrome footer */

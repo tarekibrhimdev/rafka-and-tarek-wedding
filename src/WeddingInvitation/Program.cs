@@ -46,13 +46,12 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
-/* Development: do not call UseHttpsRedirection — it pushes browsers to https://localhost where Edge often hits ERR_HTTP2_PROTOCOL_ERROR. Use http://localhost:7253 (WeddingInvitation launch profile). */
+/* Physical wwwroot — serves /cinematic-invite/* reliably in dev and prod (MapStaticAssets alone can miss newly added files until rebuild). */
+app.UseStaticFiles();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    /* Physical wwwroot first — avoids MapStaticAssets chunked/HTTP2 edge cases for /cinematic-invite/ etc. */
-    app.UseStaticFiles();
 }
 
 app.UseRouting();

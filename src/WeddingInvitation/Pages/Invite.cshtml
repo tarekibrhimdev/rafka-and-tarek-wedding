@@ -14,7 +14,7 @@
     string CinImg(string f) => Url.Content($"~/cinematic-invite/images/{f}");
 }
 
-<div id="invite-root" class="invite-root lang-en">
+<div id="invite-root" class="invite-root lang-en" data-cin-after-rsvp-success="@(Model.RsvpSuccess ? "true" : "false")">
     <script type="application/json" id="invite-copy-json">@Html.Raw(Model.InviteCopyJson)</script>
     <div id="cin-loader" class="cin-loader" aria-busy="true" aria-live="polite">
         <div class="cin-loader__inner">
@@ -139,7 +139,7 @@
                             <div class="cin-event-cards" data-animate-group>
                                 <article class="cin-event-card" data-animate-child>
                                     <div class="cin-event-card__icon" aria-hidden="true">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.45"><path d="M4 21h16M6 21V10.5l6-4.5 6 4.5V21M9 21v-4h6v4M12 6.5V3M12 3h.01" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21h16M6 21V10.5l6-4.5 6 4.5V21M9 21v-4h6v4M12 6.5V3M12 3h.01" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                     </div>
                                     <div class="cin-event-card__body">
                                         <p class="cin-event-card__kicker" data-i18n-key="cin_detail_ceremony_kicker">@En("cin_detail_ceremony_kicker")</p>
@@ -150,7 +150,7 @@
                                 </article>
                                 <article class="cin-event-card cin-event-card--party" data-animate-child>
                                     <div class="cin-event-card__icon" aria-hidden="true">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.45"><path d="M8 2h8M9 2v6.5c0 2 1.5 3.5 3 3.5s3-1.5 3-3.5V2" stroke-linecap="round" /><path d="M12 12v8M9 22h6" stroke-linecap="round" /><path d="M7.5 8.5h9" stroke-linecap="round" /></svg>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2h8M9 2v6.5c0 2 1.5 3.5 3 3.5s3-1.5 3-3.5V2" stroke-linecap="round" /><path d="M12 12v8M9 22h6" stroke-linecap="round" /><path d="M7.5 8.5h9" stroke-linecap="round" /></svg>
                                     </div>
                                     <div class="cin-event-card__body">
                                         <p class="cin-event-card__kicker" data-i18n-key="cin_detail_reception_kicker">@En("cin_detail_reception_kicker")</p>
@@ -195,32 +195,104 @@
                     </div>
 
                     <div class="swiper-slide" data-scene="location" data-progress-label="Location">
-                        <div class="cin-slide__media">
-                            <img class="cin-slide__fill-img" src="@CinImg("celebration-arch.png")" alt="" loading="lazy" decoding="async" />
-                        </div>
+                        <div class="cin-slide__media cin-slide__media--location-hero" style="background-image: url('@Model.LocationHeroUrl');" aria-hidden="true"></div>
                         <div class="cin-slide__veil"></div>
                         <div class="cin-slide__grain" aria-hidden="true"></div>
                         <div class="cin-slide__inner cin-slide__inner--stack">
                             <p class="cin-eyebrow" data-animate style="text-align: center" data-i18n-key="cin_location_eyebrow">@En("cin_location_eyebrow")</p>
                             <p class="cin-location-lead cin-body" data-animate style="text-align: center; margin-top: 0.45rem; max-width: 20rem; margin-left: auto; margin-right: auto; line-height: 1.5" data-i18n-key="cin_location_lead">@En("cin_location_lead")</p>
+                            <p class="cin-location-poetic" data-animate data-i18n-key="cin_location_poetic">@En("cin_location_poetic")</p>
                             <div class="cin-locations">
-                                <article class="cin-location-block" data-animate>
-                                    <p class="cin-location-block__kicker" data-i18n-key="cin_location_church_kicker">@En("cin_location_church_kicker")</p>
-                                    <h3 class="cin-location-block__title" data-i18n-key="cin_location_church_title">@En("cin_location_church_title")</h3>
-                                    <p class="cin-location-block__meta cin-body" data-i18n-key="cin_location_church_meta">@En("cin_location_church_meta")</p>
-                                    <div class="cin-map-frame">
-                                        <iframe title="Church location map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.openstreetmap.org/export/embed.html?bbox=35.820%2C33.620%2C35.870%2C33.660&amp;layer=mapnik&amp;marker=33.640%2C35.845"></iframe>
+                                <article class="cin-location-block cin-location-block--ceremony">
+                                    <div class="cin-location-block__surface" data-animate>
+                                        <div class="cin-dest-scene">
+                                            <header class="cin-dest-header">
+                                                <p class="cin-location-block__kicker" data-i18n-key="cin_location_church_kicker">@En("cin_location_church_kicker")</p>
+                                                <h3 class="cin-location-block__title" data-i18n-key="cin_location_church_title">@En("cin_location_church_title")</h3>
+                                                <p class="cin-location-block__meta cin-body" data-i18n-key="cin_location_church_meta">@En("cin_location_church_meta")</p>
+                                            </header>
+                                            <a
+                                                class="cin-dest-frame"
+                                                href="https://www.google.com/maps/search/?api=1&amp;query=Saint+Elias+Catholic+Church+Kherbet+Qanafar+Lebanon"
+                                                data-cin-external-maps
+                                                data-i18n-aria="cin_maps_open_aria"
+                                                rel="noopener noreferrer"
+                                                aria-label="@En("cin_maps_open_aria")"
+                                            >
+                                                <div class="cin-dest-card__preview">
+                                                    <img class="cin-dest-card__map" src="@Model.ChurchStaticMapPreviewUrl" alt="" width="1280" height="800" loading="lazy" decoding="async" />
+                                                    <div class="cin-dest-card__carto" aria-hidden="true"></div>
+                                                    <div class="cin-dest-card__shade" aria-hidden="true"></div>
+                                                    <div class="cin-dest-card__tint" aria-hidden="true"></div>
+                                                    <div class="cin-dest-card__mist" aria-hidden="true"></div>
+                                                    <div class="cin-dest-card__grain" aria-hidden="true"></div>
+                                                    <div class="cin-dest-card__gleam" aria-hidden="true"></div>
+                                                    <span class="cin-dest-card__marker" aria-hidden="true"></span>
+                                                    <span class="cin-dest-card__cta" data-i18n-key="cin_maps_open" aria-hidden="true">@En("cin_maps_open")</span>
+                                                </div>
+                                            </a>
+                                        </div>
                                     </div>
-                                    <a class="cin-maps-btn" href="https://www.google.com/maps/search/?api=1&amp;query=Saint+Elias+Catholic+Church+Kherbet+Qanafar+Lebanon" target="_blank" rel="noopener noreferrer" data-i18n-key="cin_maps_open">@En("cin_maps_open")</a>
                                 </article>
-                                <article class="cin-location-block" data-animate>
-                                    <p class="cin-location-block__kicker" data-i18n-key="cin_location_venue_kicker">@En("cin_location_venue_kicker")</p>
-                                    <h3 class="cin-location-block__title" data-i18n-key="cin_location_venue_title">@En("cin_location_venue_title")</h3>
-                                    <p class="cin-location-block__meta cin-body" data-i18n-key="cin_location_venue_meta">@En("cin_location_venue_meta")</p>
-                                    <div class="cin-map-frame">
-                                        <iframe title="Reception venue map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.openstreetmap.org/export/embed.html?bbox=35.707%2C33.636%2C35.768%2C33.696&amp;layer=mapnik&amp;marker=33.666088%2C35.737484"></iframe>
+                                <article class="cin-location-block cin-location-block--reception">
+                                    <div class="cin-location-block__surface" data-animate>
+                                        <div class="cin-dest-scene">
+                                            <header class="cin-dest-header">
+                                                <p class="cin-location-block__kicker" data-i18n-key="cin_location_venue_kicker">@En("cin_location_venue_kicker")</p>
+                                                <h3 class="cin-location-block__title" data-i18n-key="cin_location_venue_title">@En("cin_location_venue_title")</h3>
+                                                <p class="cin-location-block__meta cin-body" data-i18n-key="cin_location_venue_meta">@En("cin_location_venue_meta")</p>
+                                            </header>
+                                            <a
+                                                class="cin-dest-frame"
+                                                href="https://www.google.com/maps/search/?api=1&amp;query=33.666088%2C35.737484"
+                                                data-cin-external-maps
+                                                data-i18n-aria="cin_maps_open_aria"
+                                                rel="noopener noreferrer"
+                                                aria-label="@En("cin_maps_open_aria")"
+                                            >
+                                                <div class="cin-dest-card__preview">
+                                                    <img class="cin-dest-card__map" src="@Model.VenueStaticMapPreviewUrl" alt="" width="1280" height="800" loading="lazy" decoding="async" />
+                                                    <div class="cin-dest-card__carto" aria-hidden="true"></div>
+                                                    <div class="cin-dest-card__shade" aria-hidden="true"></div>
+                                                    <div class="cin-dest-card__tint" aria-hidden="true"></div>
+                                                    <div class="cin-dest-card__mist" aria-hidden="true"></div>
+                                                    <div class="cin-dest-card__grain" aria-hidden="true"></div>
+                                                    <div class="cin-dest-card__gleam" aria-hidden="true"></div>
+                                                    <span class="cin-dest-card__marker cin-dest-card__marker--offset" aria-hidden="true"></span>
+                                                    <span class="cin-dest-card__cta" data-i18n-key="cin_maps_open" aria-hidden="true">@En("cin_maps_open")</span>
+                                                </div>
+                                            </a>
+                                        </div>
                                     </div>
-                                    <a class="cin-maps-btn" href="https://www.google.com/maps/search/?api=1&amp;query=33.666088%2C35.737484" target="_blank" rel="noopener noreferrer" data-i18n-key="cin_maps_open">@En("cin_maps_open")</a>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide" data-scene="gifts" data-progress-label="Gifts">
+                        <div class="cin-slide__media">
+                            <img class="cin-slide__fill-img" src="@CinImg("celebration-arch.png")" alt="" loading="lazy" decoding="async" />
+                        </div>
+                        <div class="cin-slide__veil cin-slide__veil--soft"></div>
+                        <div class="cin-slide__grain" aria-hidden="true"></div>
+                        <div class="cin-slide__inner cin-slide__inner--center">
+                            <p class="cin-eyebrow" data-animate data-i18n-key="cin_gifts_eyebrow">@En("cin_gifts_eyebrow")</p>
+                            <p class="cin-body" data-animate style="margin-top: 0.65rem; max-width: 18.5rem; line-height: 1.55" data-i18n-key="cin_gifts_lead">@En("cin_gifts_lead")</p>
+                            <div class="cin-gifts" data-animate>
+                                <article class="cin-gift-card">
+                                    <p class="cin-gift-card__label" data-i18n-key="cin_gifts_wish_label">@En("cin_gifts_wish_label")</p>
+                                    <p class="cin-gift-card__hint" data-i18n-key="cin_gifts_wish_hint">@En("cin_gifts_wish_hint")</p>
+                                    <p class="cin-gift-card__value" dir="ltr" translate="no" data-i18n-key="cin_gifts_wish_account">@En("cin_gifts_wish_account")</p>
+                                </article>
+                                <article class="cin-gift-card">
+                                    <p class="cin-gift-card__label" data-i18n-key="cin_gifts_phone_label">@En("cin_gifts_phone_label")</p>
+                                    <p class="cin-gift-card__hint" data-i18n-key="cin_gifts_phone_hint">@En("cin_gifts_phone_hint")</p>
+                                    <a class="cin-gift-card__value cin-gift-card__value--link" dir="ltr" translate="no" href="tel:+96181646800" data-i18n-key="cin_gifts_phone_display">@En("cin_gifts_phone_display")</a>
+                                </article>
+                                <article class="cin-gift-card">
+                                    <p class="cin-gift-card__label" data-i18n-key="cin_gifts_wu_label">@En("cin_gifts_wu_label")</p>
+                                    <p class="cin-gift-card__hint" data-i18n-key="cin_gifts_wu_hint">@En("cin_gifts_wu_hint")</p>
+                                    <p class="cin-gift-card__value" dir="ltr" translate="no" data-i18n-key="cin_gifts_wu_name">@En("cin_gifts_wu_name")</p>
                                 </article>
                             </div>
                         </div>
@@ -228,7 +300,7 @@
 
                     <div class="swiper-slide" data-scene="rsvp" data-progress-label="RSVP">
                         <div class="cin-slide__media">
-                            <img class="cin-slide__fill-img" src="@CinImg("story-embrace.png")" alt="" loading="lazy" decoding="async" />
+                            <img class="cin-slide__fill-img" src="@CinImg("rsvp-celebration.png")" alt="" loading="lazy" decoding="async" />
                         </div>
                         <div class="cin-slide__veil cin-slide__veil--soft"></div>
                         <div class="cin-slide__grain" aria-hidden="true"></div>
@@ -291,30 +363,6 @@
                                     <p class="cin-display-md" data-i18n-key="cin_rsvp_success_1">@En("cin_rsvp_success_1")</p>
                                     <p class="cin-body" style="margin-top: 0.75rem" data-i18n-key="cin_rsvp_success_2">@En("cin_rsvp_success_2")</p>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide" data-scene="gifts" data-progress-label="Gifts">
-                        <div class="cin-slide__media">
-                            <img class="cin-slide__fill-img" src="@CinImg("celebration-arch.png")" alt="" loading="lazy" decoding="async" />
-                        </div>
-                        <div class="cin-slide__veil cin-slide__veil--soft"></div>
-                        <div class="cin-slide__grain" aria-hidden="true"></div>
-                        <div class="cin-slide__inner cin-slide__inner--center">
-                            <p class="cin-eyebrow" data-animate data-i18n-key="cin_gifts_eyebrow">@En("cin_gifts_eyebrow")</p>
-                            <p class="cin-body" data-animate style="margin-top: 0.65rem; max-width: 18.5rem; line-height: 1.55" data-i18n-key="cin_gifts_lead">@En("cin_gifts_lead")</p>
-                            <div class="cin-gifts" data-animate>
-                                <article class="cin-gift-card">
-                                    <p class="cin-gift-card__label" data-i18n-key="cin_gifts_wish_label">@En("cin_gifts_wish_label")</p>
-                                    <p class="cin-gift-card__hint" data-i18n-key="cin_gifts_wish_hint">@En("cin_gifts_wish_hint")</p>
-                                    <p class="cin-gift-card__value" dir="ltr" translate="no" data-i18n-key="cin_gifts_wish_account">@En("cin_gifts_wish_account")</p>
-                                </article>
-                                <article class="cin-gift-card">
-                                    <p class="cin-gift-card__label" data-i18n-key="cin_gifts_phone_label">@En("cin_gifts_phone_label")</p>
-                                    <p class="cin-gift-card__hint" data-i18n-key="cin_gifts_phone_hint">@En("cin_gifts_phone_hint")</p>
-                                    <a class="cin-gift-card__value cin-gift-card__value--link" dir="ltr" translate="no" href="tel:+96181646800" data-i18n-key="cin_gifts_phone_display">@En("cin_gifts_phone_display")</a>
-                                </article>
                             </div>
                         </div>
                     </div>

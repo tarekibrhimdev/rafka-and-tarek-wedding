@@ -78,6 +78,62 @@
         syncDisabled();
     }
 
+    function initExternalMapsOpen() {
+        document.addEventListener(
+            "click",
+            function (e) {
+                var a = e.target.closest("a[data-cin-external-maps]");
+                if (!a || !a.href) {
+                    return;
+                }
+                if (e.defaultPrevented) {
+                    return;
+                }
+                if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) {
+                    return;
+                }
+                var btn = typeof e.button === "number" ? e.button : 0;
+                if (btn !== 0) {
+                    return;
+                }
+                e.preventDefault();
+                var w = window.open(a.href, "_blank", "noopener,noreferrer");
+                if (w) {
+                    w.opener = null;
+                }
+            },
+            false
+        );
+    }
+
+    /**
+     * After server RSVP redirect the page reloads; show thank-you on RSVP, then continue to Finale (gifts already seen).
+     */
+    function schedulePostRsvpAdvanceToFinale(swiper) {
+        var root = document.getElementById("invite-root");
+        if (!root || root.getAttribute("data-cin-after-rsvp-success") !== "true" || !swiper) {
+            return;
+        }
+        var slides = swiper.el.querySelectorAll(".swiper-slide");
+        var finaleIdx = -1;
+        for (var i = 0; i < slides.length; i++) {
+            if (slides[i].getAttribute("data-scene") === "finale") {
+                finaleIdx = i;
+                break;
+            }
+        }
+        if (finaleIdx < 0) {
+            return;
+        }
+        var reduced =
+            typeof window.matchMedia === "function" &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        var delayMs = reduced ? 500 : 1400;
+        window.setTimeout(function () {
+            swiper.slideTo(finaleIdx, reduced ? 0 : 1080, false);
+        }, delayMs);
+    }
+
     function initRsvp() {
         var form = document.getElementById("cin-rsvp-form");
         var root = document.getElementById("cin-rsvp");
@@ -90,7 +146,30 @@
         var clientErr = document.querySelector("[data-cin-rsvp-client-err]");
         var valBox = document.querySelector("[data-cin-rsvp-validation]");
         var isDemo = form.hasAttribute("data-cin-rsvp-demo");
+        var attendYes = form.querySelector('input[name="RsvpAttending"][value="yes"]');
         var attendNo = form.querySelector('input[name="RsvpAttending"][value="no"]');
+        var nameInput = document.getElementById("cin-guest-name");
+
+        function primaryPartyNameEl() {
+            var cb = form.querySelector('input[name="PartySlotIndexes"][value="0"]');
+            if (!cb) {
+                return null;
+            }
+            var row = cb.closest(".cin-rsvp-party__row");
+            return row ? row.querySelector(".cin-rsvp-party__name") : null;
+        }
+
+        function syncNameToPrimaryPartyRow(allowEmpty) {
+            var span = primaryPartyNameEl();
+            if (!nameInput || !span) {
+                return;
+            }
+            var v = (nameInput.value || "").trim();
+            if (v.length === 0 && !allowEmpty) {
+                return;
+            }
+            span.textContent = v;
+        }
 
         function togglePartyVisibility() {
             if (!partyFieldset || !attendYes || !attendNo) {
@@ -122,6 +201,16 @@
             cb.addEventListener("change", clearClientPartyErr);
         });
         togglePartyVisibility();
+
+        if (nameInput) {
+            nameInput.addEventListener("input", function () {
+                syncNameToPrimaryPartyRow(true);
+            });
+            nameInput.addEventListener("change", function () {
+                syncNameToPrimaryPartyRow(true);
+            });
+            syncNameToPrimaryPartyRow(false);
+        }
 
         form.addEventListener("submit", function (e) {
             if (typeof form.reportValidity === "function" && !form.reportValidity()) {
@@ -158,6 +247,7 @@
     }
 
     document.addEventListener("DOMContentLoaded", function () {
+        initExternalMapsOpen();
         var main = window.CinematicSwiper && window.CinematicSwiper.initMain();
         var count = main && main.slides ? main.slides.length : 9;
         buildProgress(count);
@@ -178,6 +268,7 @@
             window.__cinRevealActiveSlide = function () {
                 window.CinematicAnimations && window.CinematicAnimations.revealActive(main);
             };
+            schedulePostRsvpAdvanceToFinale(main);
         }
 
         window.CinematicCountdown && window.CinematicCountdown.init(document.getElementById("cin-countdown-root"));
