@@ -134,6 +134,46 @@ body {
     padding: 0 0.5rem;
 }
 
+.cin-enter-gate__lang {
+    margin: 0 auto 1.15rem;
+    width: 100%;
+}
+
+.cin-enter-gate__lang .cin-lang-row {
+    margin-top: 0;
+}
+
+/* Language pills on dark gate veil — readable over blur */
+.cin-enter-gate .cin-lang-pill {
+    background: rgba(255, 253, 249, 0.2);
+    border-color: rgba(255, 253, 249, 0.35);
+    color: rgba(252, 250, 246, 0.94);
+    box-shadow:
+        0 2px 16px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 253, 249, 0.2);
+}
+
+.cin-enter-gate .cin-lang-pill.is-active {
+    background: rgba(36, 32, 28, 0.75);
+    border-color: rgba(255, 253, 249, 0.22);
+    color: rgba(253, 252, 250, 0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .cin-enter-gate .cin-lang-pill:hover {
+        background: rgba(255, 253, 249, 0.3);
+        border-color: rgba(255, 253, 249, 0.48);
+        color: rgba(253, 252, 250, 0.99);
+        box-shadow: 0 4px 22px rgba(0, 0, 0, 0.28);
+    }
+
+    .cin-enter-gate .cin-lang-pill.is-active:hover {
+        background: rgba(48, 42, 38, 0.82);
+        border-color: rgba(255, 253, 249, 0.32);
+        color: rgba(253, 252, 250, 0.99);
+    }
+}
+
 .cin-enter-gate__kicker {
     font-family: var(--cin-font-ui);
     font-size: 0.55rem;
@@ -394,21 +434,35 @@ body {
     text-align: start;
 }
 
-#invite-root.lang-ar .cin-gift-card {
-    text-align: start;
-}
-
-#invite-root.lang-ar .cin-gift-card__value,
-#invite-root.lang-ar .cin-gift-card__value--link {
-    text-align: start;
-}
-
 #invite-root.lang-ar .cin-display-xl,
 #invite-root.lang-ar .cin-display-lg,
 #invite-root.lang-ar .cin-display-md,
 #invite-root.lang-ar .cin-story-lead {
     font-family: Amiri, Georgia, serif;
     letter-spacing: 0;
+}
+
+.cin-finale-phones {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: baseline;
+    gap: 0.35em;
+    margin-top: 1rem;
+    max-width: 17rem;
+    margin-inline: auto;
+    font-family: var(--cin-font-ui);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+}
+
+#invite-root.lang-ar .cin-finale-phones {
+    flex-direction: row-reverse;
+}
+
+.cin-finale-phones__n {
+    direction: ltr;
+    unicode-bidi: isolate;
 }
 
 /* Main Swiper */
@@ -1313,6 +1367,15 @@ body {
     text-align: end;
 }
 
+/* RTL: start/end swap physically; keep both venues on the same inline-start edge as English LTR */
+#invite-root.lang-ar .cin-location-block--reception {
+    text-align: start;
+}
+
+#invite-root.lang-ar .cin-location-block--reception .cin-location-block__meta {
+    margin-inline: 0;
+}
+
 @media (prefers-reduced-motion: no-preference) {
     .swiper-slide[data-scene="location"].swiper-slide-active .cin-location-block--ceremony {
         animation: cin-dest-float-a 11s ease-in-out infinite alternate;
@@ -1933,6 +1996,34 @@ body {
     color: var(--cin-ivory);
 }
 
+.cin-gift-card__hint--tight {
+    margin-top: 0;
+}
+
+.cin-gift-card__value--tight {
+    margin-top: 0.38rem;
+}
+
+.cin-gift-dual {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 0.55rem;
+    width: 100%;
+}
+
+.cin-gift-dual__col {
+    text-align: center;
+}
+
+.cin-gift-card--wish-dual .cin-gift-card__hint:first-of-type {
+    margin-top: 0.38rem;
+    max-width: 17rem;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+}
+
 .cin-gift-card__value--link {
     display: inline-block;
     text-decoration: none;
@@ -2275,6 +2366,36 @@ body {
     flex-direction: row;
 }
 
+/* Arabic RSVP: labels and copy align to the right (physical); form uses RTL flow */
+#invite-root.lang-ar .swiper-slide[data-scene="rsvp"] .cin-rsvp-form {
+    text-align: right;
+    direction: rtl;
+}
+
+#invite-root.lang-ar .swiper-slide[data-scene="rsvp"] .cin-field label,
+#invite-root.lang-ar .swiper-slide[data-scene="rsvp"] .cin-field-label {
+    text-align: right;
+}
+
+#invite-root.lang-ar .swiper-slide[data-scene="rsvp"] .cin-rsvp-party legend,
+#invite-root.lang-ar .swiper-slide[data-scene="rsvp"] .cin-rsvp-party-cap {
+    text-align: right;
+}
+
+#invite-root.lang-ar .swiper-slide[data-scene="rsvp"] .cin-field input:not(#cin-guest-name),
+#invite-root.lang-ar .swiper-slide[data-scene="rsvp"] .cin-field select {
+    text-align: right;
+}
+
+#invite-root.lang-ar .swiper-slide[data-scene="rsvp"] #cin-guest-name {
+    text-align: right;
+}
+
+#invite-root.lang-ar .swiper-slide[data-scene="rsvp"] .cin-rsvp__validation,
+#invite-root.lang-ar .swiper-slide[data-scene="rsvp"] .cin-rsvp__client-err {
+    text-align: right;
+}
+
 .swiper-slide[data-scene="rsvp"] .cin-field input,
 .swiper-slide[data-scene="rsvp"] .cin-field select {
     padding: 0.68rem 0.88rem;
@@ -2297,6 +2418,21 @@ body {
 .swiper-slide[data-scene="rsvp"] .cin-field select:focus {
     border-color: rgba(210, 190, 155, 0.72);
     background: rgba(10, 9, 8, 0.44);
+}
+
+.swiper-slide[data-scene="rsvp"] .cin-field input:read-only {
+    cursor: default;
+    background: rgba(8, 7, 6, 0.38);
+    border-color: rgba(255, 253, 249, 0.28);
+    color: rgba(255, 253, 249, 0.92);
+    box-shadow: inset 0 1px 0 rgba(255, 253, 249, 0.04);
+    caret-color: transparent;
+}
+
+.swiper-slide[data-scene="rsvp"] .cin-field input:read-only:focus {
+    border-color: rgba(255, 253, 249, 0.36);
+    background: rgba(8, 7, 6, 0.38);
+    outline: none;
 }
 
 .swiper-slide[data-scene="rsvp"] .cin-rsvp-attend-opt span {

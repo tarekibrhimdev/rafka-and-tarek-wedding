@@ -53,10 +53,10 @@ public class InviteModel(WeddingDbContext db, IConfiguration configuration, IWeb
     /// Lightweight static terrain preview (not an embed). Styled in CSS as monochrome editorial art — no Google UI, no iframe.
     /// </summary>
     public string ChurchStaticMapPreviewUrl { get; } =
-        "https://staticmap.openstreetmap.de/staticmap.php?center=33.640,35.845&zoom=11&size=1280x800&maptype=mapnik";
+        "https://staticmap.openstreetmap.de/staticmap.php?center=33.6413842,35.7164024&zoom=16&size=1280x800&maptype=mapnik";
 
     public string VenueStaticMapPreviewUrl { get; } =
-        "https://staticmap.openstreetmap.de/staticmap.php?center=33.666088,35.737484&zoom=11&size=1280x800&maptype=mapnik";
+        "https://staticmap.openstreetmap.de/staticmap.php?center=33.656072,35.7551477&zoom=16&size=1280x800&maptype=mapnik";
 
     [BindProperty]
     public string RsvpName { get; set; } = "";

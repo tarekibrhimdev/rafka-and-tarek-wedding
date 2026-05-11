@@ -30,6 +30,12 @@
     <div id="cin-enter-gate" class="cin-enter-gate" role="dialog" aria-modal="true" aria-labelledby="cin-enter-title">
         <div class="cin-enter-gate__veil" aria-hidden="true"></div>
         <div class="cin-enter-gate__inner">
+            <div class="cin-enter-gate__lang">
+                <div class="cin-lang-row" role="group" aria-label="Language">
+                    <button type="button" class="cin-lang-pill cin-lang-toggle-opt is-active" data-set-lang="en" aria-pressed="true">English</button>
+                    <button type="button" class="cin-lang-pill cin-lang-toggle-opt" data-set-lang="ar" aria-pressed="false">العربية</button>
+                </div>
+            </div>
             <p class="cin-enter-gate__kicker">You're invited</p>
             <h2 id="cin-enter-title" class="cin-enter-gate__title">Our love story</h2>
             <button type="button" class="cin-enter-gate__cta cin-btn-primary" id="cin-enter-btn">Begin</button>
@@ -207,7 +213,7 @@
                                             </header>
                                             <a
                                                 class="cin-dest-frame"
-                                                href="https://www.google.com/maps/search/?api=1&amp;query=Saint+Elias+Catholic+Church+Kherbet+Qanafar+Lebanon"
+                                                href="https://www.google.com/maps/dir//JPR8%2BHH2+St.+Elias+Melkite+Church/@33.6413842,35.7161055,21z/data=!4m16!1m7!3m6!1s0x151f274e3a27673d:0x49f88d4af4480e31!2sSt.+Elias+Melkite+Church!8m2!3d33.641384!4d35.7164024!16s%2Fg%2F11sdsm_wxm!4m7!1m0!1m5!1m1!1s0x151f274e3a27673d:0x49f88d4af4480e31!2m2!1d35.7164033!2d33.6413843"
                                                 data-cin-external-maps
                                                 data-i18n-aria="cin_maps_open_aria"
                                                 rel="noopener noreferrer"
@@ -246,7 +252,7 @@
                                             </header>
                                             <a
                                                 class="cin-dest-frame"
-                                                href="https://www.google.com/maps/search/?api=1&amp;query=33.666088%2C35.737484"
+                                                href="https://www.google.com/maps/dir//Royal+venue,+MQ44%2BF2,+Tal+Znoub+El+Jdideh/@33.7662115,35.5152448,11z/data=!4m8!4m7!1m0!1m5!1m1!1s0x151f29da4dbd02c9:0xc6941eae35bf25c2!2m2!1d35.7551477!2d33.656072"
                                                 data-cin-external-maps
                                                 data-i18n-aria="cin_maps_open_aria"
                                                 rel="noopener noreferrer"
@@ -255,7 +261,7 @@
                                                 <div class="cin-dest-card__preview">
                                                     <img
                                                         class="cin-dest-card__map"
-                                                        src="https://staticmap.openstreetmap.de/staticmap.php?center=33.666088,35.737484&amp;zoom=11&amp;size=1280x800&amp;maptype=mapnik"
+                                                        src="https://staticmap.openstreetmap.de/staticmap.php?center=33.656072,35.7551477&amp;zoom=16&amp;size=1280x800&amp;maptype=mapnik"
                                                         alt=""
                                                         width="1280"
                                                         height="800"
@@ -292,15 +298,19 @@
                                 Your presence is gift enough — if you still wish to spoil us, you may use any of the options below.
                             </p>
                             <div class="cin-gifts" data-animate>
-                                <article class="cin-gift-card">
+                                <article class="cin-gift-card cin-gift-card--wish-dual">
                                     <p class="cin-gift-card__label">Wish Money</p>
-                                    <p class="cin-gift-card__hint">Account number</p>
-                                    <p class="cin-gift-card__value" dir="ltr" translate="no">20919566-03</p>
-                                </article>
-                                <article class="cin-gift-card">
-                                    <p class="cin-gift-card__label">Phone</p>
-                                    <p class="cin-gift-card__hint">For transfers or to reach us</p>
-                                    <a class="cin-gift-card__value cin-gift-card__value--link" dir="ltr" translate="no" href="tel:+96181646800">81 646 800</a>
+                                    <p class="cin-gift-card__hint">You can send using the account number or this phone number — both work for the same Wish wedding account.</p>
+                                    <div class="cin-gift-dual">
+                                        <div class="cin-gift-dual__col">
+                                            <p class="cin-gift-card__hint cin-gift-card__hint--tight">Account number</p>
+                                            <p class="cin-gift-card__value cin-gift-card__value--tight" dir="ltr" translate="no">20919566-03</p>
+                                        </div>
+                                        <div class="cin-gift-dual__col">
+                                            <p class="cin-gift-card__hint cin-gift-card__hint--tight">Phone number</p>
+                                            <a class="cin-gift-card__value cin-gift-card__value--link cin-gift-card__value--tight" dir="ltr" translate="no" href="tel:+96181646800">81 646 800</a>
+                                        </div>
+                                    </div>
                                 </article>
                                 <article class="cin-gift-card">
                                     <p class="cin-gift-card__label">Western Union</p>
@@ -327,8 +337,8 @@
                                 </div>
                                 <form class="cin-rsvp-form" id="cin-rsvp-form" novalidate data-cin-rsvp-demo>
                                     <div class="cin-field">
-                                        <label for="cin-guest-name">Your name</label>
-                                        <input id="cin-guest-name" name="RsvpName" type="text" autocomplete="name" value="Alex Guest" placeholder="Full name" required maxlength="200" />
+                                        <label for="cin-guest-name" data-i18n-key="cin_rsvp_label_name">Invitation for</label>
+                                        <input id="cin-guest-name" name="RsvpName" type="text" autocomplete="name" value="Alex Guest" readonly="readonly" aria-readonly="true" dir="auto" placeholder="" required maxlength="200" />
                                     </div>
                                     <div class="cin-field">
                                         <span class="cin-field-label">Attending</span>
