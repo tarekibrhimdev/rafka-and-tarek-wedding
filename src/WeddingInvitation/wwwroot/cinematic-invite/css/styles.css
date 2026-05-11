@@ -98,6 +98,74 @@ body {
     pointer-events: none;
 }
 
+/* Start gate (music + story begin after explicit tap) */
+.cin-enter-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 95;
+    display: grid;
+    place-items: center;
+    padding: max(1.25rem, env(safe-area-inset-top, 0px)) max(1.25rem, env(safe-area-inset-right, 0px))
+        max(1.25rem, env(safe-area-inset-bottom, 0px)) max(1.25rem, env(safe-area-inset-left, 0px));
+    transition:
+        opacity 0.75s var(--cin-ease-cinematic),
+        visibility 0.75s;
+}
+
+.cin-enter-gate.is-done {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.cin-enter-gate__veil {
+    position: absolute;
+    inset: 0;
+    background: rgba(22, 18, 16, 0.5);
+    backdrop-filter: blur(12px) saturate(112%);
+    -webkit-backdrop-filter: blur(12px) saturate(112%);
+}
+
+.cin-enter-gate__inner {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 20rem;
+    padding: 0 0.5rem;
+}
+
+.cin-enter-gate__kicker {
+    font-family: var(--cin-font-ui);
+    font-size: 0.55rem;
+    font-weight: 600;
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: rgba(252, 250, 246, 0.75);
+    margin: 0 0 1rem;
+}
+
+.cin-enter-gate__title {
+    font-family: var(--cin-font-display);
+    font-size: clamp(1.9rem, 8.5vw, 2.85rem);
+    font-weight: 500;
+    line-height: 1.12;
+    color: #fdfbf7;
+    margin: 0 0 1.85rem;
+    text-shadow: 0 2px 28px rgba(0, 0, 0, 0.4);
+}
+
+.cin-enter-gate__cta.cin-btn-primary {
+    width: auto;
+    min-width: 11.5rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+#invite-root.lang-ar .cin-enter-gate__title {
+    font-family: Amiri, Georgia, serif;
+    letter-spacing: 0.02em;
+}
+
 .cin-loader__inner {
     text-align: center;
     padding: 2rem;
@@ -128,58 +196,12 @@ body {
     animation: cin-shimmer-line 2.4s var(--cin-ease-soft) infinite;
 }
 
-/* Mute */
 @media (prefers-reduced-motion: no-preference) {
     [data-animate],
     [data-animate-child] {
         opacity: 0;
         will-change: opacity, transform, filter;
     }
-}
-
-.cin-audio-btn {
-    position: absolute;
-    z-index: 60;
-    top: calc(var(--cin-safe-top) + 3.15rem);
-    right: max(10px, env(safe-area-inset-right, 0px));
-    width: 38px;
-    height: 38px;
-    border: 1px solid rgba(92, 82, 74, 0.12);
-    border-radius: 50%;
-    background: rgba(255, 253, 249, 0.52);
-    color: var(--cin-ink);
-    cursor: pointer;
-    display: grid;
-    place-items: center;
-    backdrop-filter: blur(18px) saturate(110%);
-    -webkit-backdrop-filter: blur(18px) saturate(110%);
-    box-shadow: 0 4px 20px rgba(42, 36, 30, 0.07);
-    transition:
-        transform 0.35s var(--cin-ease-luxury),
-        opacity 0.4s var(--cin-ease-soft),
-        background 0.35s ease,
-        box-shadow 0.35s ease;
-    pointer-events: auto;
-}
-
-.cin-audio-btn:active {
-    transform: scale(0.94);
-}
-
-.cin-audio-btn[aria-pressed="true"] .cin-audio-btn__off {
-    display: block;
-}
-
-.cin-audio-btn[aria-pressed="true"] .cin-audio-btn__on {
-    display: none;
-}
-
-.cin-audio-btn[aria-pressed="false"] .cin-audio-btn__off {
-    display: none;
-}
-
-.cin-audio-btn[aria-pressed="false"] .cin-audio-btn__on {
-    display: block;
 }
 
 /* Story progress — ambient, barely-there */

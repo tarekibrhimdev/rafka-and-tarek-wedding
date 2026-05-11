@@ -23,6 +23,15 @@
         </div>
     </div>
 
+    <div id="cin-enter-gate" class="cin-enter-gate" role="dialog" aria-modal="true" aria-labelledby="cin-enter-title">
+        <div class="cin-enter-gate__veil" aria-hidden="true"></div>
+        <div class="cin-enter-gate__inner">
+            <p class="cin-enter-gate__kicker" data-i18n-key="cin_enter_kicker">@En("cin_enter_kicker")</p>
+            <h2 id="cin-enter-title" class="cin-enter-gate__title" data-i18n-key="cin_enter_title">@En("cin_enter_title")</h2>
+            <button type="button" class="cin-enter-gate__cta cin-btn-primary" id="cin-enter-btn" data-i18n-key="cin_enter_cta">@En("cin_enter_cta")</button>
+        </div>
+    </div>
+
     <div class="cin-stage-wrap">
         <div class="cin-shell" id="cin-shell">
             <div class="cin-progress-host" aria-hidden="true">
@@ -35,15 +44,6 @@
                     <span class="cin-brand-mark__inner" data-i18n-key="cin_brand_save_the_date">@En("cin_brand_save_the_date")</span>
                 </p>
             </div>
-
-            <button type="button" class="cin-audio-btn" id="cin-audio-btn" aria-label="Toggle ambient music" aria-pressed="true" title="Sound">
-                <svg class="cin-audio-btn__on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-                    <path d="M11 5L6 9H2v6h4l5 4V5zM19 9a7 7 0 010 6M22 7a11 11 0 010 10" stroke-linecap="round" />
-                </svg>
-                <svg class="cin-audio-btn__off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-                    <path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6" stroke-linecap="round" />
-                </svg>
-            </button>
 
             <div class="swiper cin-main-swiper" id="cin-main-swiper" aria-roledescription="carousel" aria-label="Wedding story chapters">
                 <div class="swiper-wrapper">
@@ -400,14 +400,13 @@
         </div>
     </div>
 
-    <audio id="cin-audio-el" loop preload="none" playsinline></audio>
+    <audio id="cin-audio-el" loop preload="metadata" playsinline></audio>
 </div>
 
 @section Scripts {
     <script src="~/cinematic-invite/vendor/swiper/swiper-bundle.min.js" asp-append-version="true"></script>
     <script src="~/cinematic-invite/vendor/gsap/gsap.min.js" asp-append-version="true"></script>
     <script src="~/cinematic-invite/js/countdown.js" asp-append-version="true" defer></script>
-    <script src="~/cinematic-invite/js/audio.js" asp-append-version="true" defer></script>
     <script src="~/cinematic-invite/js/animations.js" asp-append-version="true" defer></script>
     <script src="~/cinematic-invite/js/swiper-config.js" asp-append-version="true" defer></script>
     <script src="~/cinematic-invite/js/app.js" asp-append-version="true" defer></script>

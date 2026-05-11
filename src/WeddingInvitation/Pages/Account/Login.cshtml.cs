@@ -29,7 +29,7 @@ public class LoginModel(SignInManager<ApplicationUser> signInManager) : PageMode
             return Page();
 
         var result = await signInManager.PasswordSignInAsync(
-            Input.Email,
+            Input.UserName.Trim(),
             Input.Password,
             Input.RememberMe,
             lockoutOnFailure: true);
@@ -41,7 +41,7 @@ public class LoginModel(SignInManager<ApplicationUser> signInManager) : PageMode
 
         ErrorMessage = result.IsLockedOut
             ? "Account locked. Try again later."
-            : "Invalid email or password.";
+            : "Invalid username or password.";
 
         return Page();
     }
@@ -49,8 +49,8 @@ public class LoginModel(SignInManager<ApplicationUser> signInManager) : PageMode
     public sealed class LoginInput
     {
         [Required]
-        [EmailAddress]
-        public string Email { get; set; } = string.Empty;
+        [Display(Name = "Username")]
+        public string UserName { get; set; } = string.Empty;
 
         [Required]
         [DataType(DataType.Password)]

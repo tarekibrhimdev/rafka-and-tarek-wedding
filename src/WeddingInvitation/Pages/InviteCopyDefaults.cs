@@ -68,7 +68,7 @@ public static class InviteCopyDefaults
                     "“What therefore God hath joined together, let not man put asunder.” — Matthew 19:6",
 
                 ["slide2_rsvp"] = "RSVP",
-                ["slide2_rsvpPhones"] = "81 646 800 · 71 675 354",
+                ["slide2_rsvpPhones"] = "81 646 800 · 71 675 254",
                 ["slide2_rsvpDeadline"] = "Kindly confirm by 14 June 2026",
 
                 ["slide2_gift"] =
@@ -85,6 +85,10 @@ public static class InviteCopyDefaults
                 ["weekday_6"] = "S",
 
                 ["cin_loader_mark"] = "Gathering light",
+
+                ["cin_enter_kicker"] = "You're invited",
+                ["cin_enter_title"] = "Our love story",
+                ["cin_enter_cta"] = "Begin",
                 ["cin_swipe_begin"] = "Swipe to begin",
                 ["cin_brand_save_the_date"] = "Save the date",
                 ["cin_story_eyebrow"] = "Our story",
@@ -203,7 +207,7 @@ public static class InviteCopyDefaults
                     "«فَلْيَكُنِ الَّذِي جَمَعَهُ اللَّهُ إِنْسَانًا وَاحِدًا.» — متى ١٩ : ٦",
 
                 ["slide2_rsvp"] = "الردّ على الدعوة",
-                ["slide2_rsvpPhones"] = "٨١ ٦٤٦ ٨٠٠ · ٧١ ٦٧٥ ٣٥٤",
+                ["slide2_rsvpPhones"] = "٨١ ٦٤٦ ٨٠٠ · ٧١ ٦٧٥ ٢٥٤",
                 ["slide2_rsvpDeadline"] = "يرجى التأكيد قبل ١٤ حزيران ٢٠٢٦",
 
                 ["slide2_gift"] =
@@ -220,6 +224,10 @@ public static class InviteCopyDefaults
                 ["weekday_6"] = "ح",
 
                 ["cin_loader_mark"] = "نجمع الضوء",
+
+                ["cin_enter_kicker"] = "نورتونا",
+                ["cin_enter_title"] = "حكاية حبّنا",
+                ["cin_enter_cta"] = "ابدأوا",
                 ["cin_swipe_begin"] = "اسحب للبدء",
                 ["cin_brand_save_the_date"] = "احفظوا التاريخ",
                 ["cin_story_eyebrow"] = "قصّتنا",

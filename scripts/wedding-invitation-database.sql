@@ -13,11 +13,13 @@
       --output scripts/_schema-from-ef.sql
     (merge the transaction body into this file or replace lines between SCHEMA START / END)
 
-  Default admin created below:
-    Email:    admin@local.test
+  Default admin (if using normal Identity hasher — not plaintext):
+    UserName: admin@local.test
     Password: ChangeMe!123
 
-  To use a different password, run locally:
+  Plaintext username login + DB reset: see scripts/reset-admin-plain-username.sql and PlainTextPasswordHasher.
+
+  To use a different password with normal hashing, run locally:
     dotnet run --project tools/PwdHash/PwdHash.csproj -- "YourPassword!"
   Paste the printed hash into [PasswordHash] in the INSERT below.
 

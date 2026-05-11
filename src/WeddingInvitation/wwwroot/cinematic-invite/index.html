@@ -27,20 +27,20 @@
         </div>
     </div>
 
+    <div id="cin-enter-gate" class="cin-enter-gate" role="dialog" aria-modal="true" aria-labelledby="cin-enter-title">
+        <div class="cin-enter-gate__veil" aria-hidden="true"></div>
+        <div class="cin-enter-gate__inner">
+            <p class="cin-enter-gate__kicker">You're invited</p>
+            <h2 id="cin-enter-title" class="cin-enter-gate__title">Our love story</h2>
+            <button type="button" class="cin-enter-gate__cta cin-btn-primary" id="cin-enter-btn">Begin</button>
+        </div>
+    </div>
+
     <div class="cin-stage-wrap">
         <div class="cin-shell" id="cin-shell">
             <div class="cin-progress-host" aria-hidden="true">
                 <div class="cin-progress" id="cin-progress"></div>
             </div>
-
-            <button type="button" class="cin-audio-btn" id="cin-audio-btn" aria-label="Toggle ambient music" aria-pressed="true" title="Sound">
-                <svg class="cin-audio-btn__on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-                    <path d="M11 5L6 9H2v6h4l5 4V5zM19 9a7 7 0 010 6M22 7a11 11 0 010 10" stroke-linecap="round" />
-                </svg>
-                <svg class="cin-audio-btn__off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-                    <path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6" stroke-linecap="round" />
-                </svg>
-            </button>
 
             <div class="swiper cin-main-swiper" id="cin-main-swiper" aria-roledescription="carousel" aria-label="Wedding story chapters">
                 <div class="swiper-wrapper">
@@ -406,13 +406,12 @@
         </div>
     </div>
 
-    <!-- Src set in audio.js only if ./music/ambient.mp3 exists (avoids 404 when optional file is missing) -->
-    <audio id="cin-audio-el" loop preload="none" playsinline></audio>
+    <!-- Music starts when guest taps #cin-enter-gate (see app.js); CIN_BASE on /invite -->
+    <audio id="cin-audio-el" loop preload="metadata" playsinline></audio>
 
     <script src="./vendor/swiper/swiper-bundle.min.js"></script>
     <script src="./vendor/gsap/gsap.min.js"></script>
     <script src="./js/countdown.js" defer></script>
-    <script src="./js/audio.js" defer></script>
     <script src="./js/animations.js" defer></script>
     <script src="./js/swiper-config.js" defer></script>
     <script src="./js/app.js" defer></script>

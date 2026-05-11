@@ -1,16 +1,19 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WeddingInvitation.Data;
+using WeddingInvitation.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<WeddingDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddSingleton<IPasswordHasher<ApplicationUser>, PlainTextPasswordHasher<ApplicationUser>>();
+
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     {
         options.Password.RequiredLength = 8;
-        options.User.RequireUniqueEmail = true;
+        options.User.RequireUniqueEmail = false;
     })
     .AddEntityFrameworkStores<WeddingDbContext>()
     .AddDefaultTokenProviders();

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 namespace WeddingInvitation.Data;
 
 public static class DbInitializer
@@ -12,19 +13,20 @@ public static class DbInitializer
         var provider = scope.ServiceProvider;
         var logger = provider.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(DbInitializer));
 
-        var userManager = provider.GetRequiredService<UserManager<ApplicationUser>>();        var configuration = provider.GetRequiredService<IConfiguration>();
+        var userManager = provider.GetRequiredService<UserManager<ApplicationUser>>();
+        var configuration = provider.GetRequiredService<IConfiguration>();
 
-        var email = configuration["Admin:Email"] ?? "admin@local.test";
+        var userName = configuration["Admin:UserName"] ?? "admin";
         var password = configuration["Admin:Password"] ?? "ChangeMe!123";
 
-        var existing = await userManager.FindByEmailAsync(email);
+        var existing = await userManager.FindByNameAsync(userName);
         if (existing is not null)
             return;
 
         var user = new ApplicationUser
         {
-            UserName = email,
-            Email = email,
+            UserName = userName,
+            Email = null,
             EmailConfirmed = true,
             CreatedAtUtc = DateTime.UtcNow,
             IsRemoved = false
@@ -39,6 +41,6 @@ public static class DbInitializer
             throw new InvalidOperationException("Admin seed failed.");
         }
 
-        logger.LogInformation("Seeded admin user {Email}. Change the password in production.", email);
+        logger.LogInformation("Seeded admin user {UserName}.", userName);
     }
 }

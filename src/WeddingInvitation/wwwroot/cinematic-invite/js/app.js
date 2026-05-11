@@ -1,4 +1,44 @@
 /**
+ * Ambient music — starts only after guest taps #cin-enter-gate (browser autoplay rules).
+ */
+(function () {
+    var AUDIO_REL = "music/ambient.mp3";
+    var started = false;
+
+    function audioUrl() {
+        var base = typeof window.CIN_BASE === "string" ? window.CIN_BASE.trim() : "";
+        if (base) {
+            return base.replace(/\/+$/, "") + "/" + AUDIO_REL;
+        }
+        return AUDIO_REL;
+    }
+
+    window.CinematicAudio = {
+        start: function () {
+            if (started) {
+                return;
+            }
+            started = true;
+            var audio = document.getElementById("cin-audio-el");
+            if (!audio) {
+                return;
+            }
+            audio.muted = false;
+            audio.volume = 0.32;
+            audio.preload = "auto";
+            if (!audio.src) {
+                audio.src = audioUrl();
+                audio.load();
+            }
+            var p = audio.play();
+            if (p !== undefined) {
+                p.catch(function () {});
+            }
+        }
+    };
+})();
+
+/**
  * Orchestration: progress UI, navigation, loader, RSVP.
  */
 (function () {
@@ -247,6 +287,32 @@
     }
 
     document.addEventListener("DOMContentLoaded", function () {
+        var root = document.getElementById("invite-root");
+        var skipGate = root && root.getAttribute("data-cin-after-rsvp-success") === "true";
+
+        var autoDismissGateIfRsvpReturn = function () {
+            if (!skipGate) {
+                return;
+            }
+            var gateReturn = document.getElementById("cin-enter-gate");
+            if (gateReturn) {
+                gateReturn.classList.add("is-done");
+                gateReturn.setAttribute("aria-hidden", "true");
+            }
+        };
+
+        var gate = document.getElementById("cin-enter-gate");
+        var enterBtn = document.getElementById("cin-enter-btn");
+        if (gate && enterBtn) {
+            enterBtn.addEventListener("click", function () {
+                gate.classList.add("is-done");
+                gate.setAttribute("aria-hidden", "true");
+                window.CinematicAudio && window.CinematicAudio.start();
+            });
+        }
+
+        autoDismissGateIfRsvpReturn();
+
         initExternalMapsOpen();
         var main = window.CinematicSwiper && window.CinematicSwiper.initMain();
         var count = main && main.slides ? main.slides.length : 9;
@@ -272,7 +338,6 @@
         }
 
         window.CinematicCountdown && window.CinematicCountdown.init(document.getElementById("cin-countdown-root"));
-        window.CinematicAudio && window.CinematicAudio.init();
         initRsvp();
     });
 
