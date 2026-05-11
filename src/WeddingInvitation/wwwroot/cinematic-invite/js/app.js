@@ -147,11 +147,12 @@
     }
 
     /**
-     * After server RSVP redirect the page reloads; show thank-you on RSVP, then continue to Finale (gifts already seen).
+     * After an accepted RSVP redirect: stay on thank-you, then auto-advance to Finale.
+     * Declined RSVPs keep data-cin-after-rsvp-success for gate + RSVP slide, but do not auto-advance (Finale copy assumes attendance).
      */
     function schedulePostRsvpAdvanceToFinale(swiper) {
         var root = document.getElementById("invite-root");
-        if (!root || root.getAttribute("data-cin-after-rsvp-success") !== "true" || !swiper) {
+        if (!root || root.getAttribute("data-cin-rsvp-auto-advance-finale") !== "true" || !swiper) {
             return;
         }
         var slides = swiper.el.querySelectorAll(".swiper-slide");
@@ -168,7 +169,8 @@
         var reduced =
             typeof window.matchMedia === "function" &&
             window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        var delayMs = reduced ? 500 : 1400;
+        /* Keep thank-you visible ~5s before auto-advancing to Finale (incl. reduced-motion: still time to read). */
+        var delayMs = 5000;
         window.setTimeout(function () {
             swiper.slideTo(finaleIdx, reduced ? 0 : 1080, false);
         }, delayMs);
@@ -188,28 +190,6 @@
         var isDemo = form.hasAttribute("data-cin-rsvp-demo");
         var attendYes = form.querySelector('input[name="RsvpAttending"][value="yes"]');
         var attendNo = form.querySelector('input[name="RsvpAttending"][value="no"]');
-        var nameInput = document.getElementById("cin-guest-name");
-
-        function primaryPartyNameEl() {
-            var cb = form.querySelector('input[name="PartySlotIndexes"][value="0"]');
-            if (!cb) {
-                return null;
-            }
-            var row = cb.closest(".cin-rsvp-party__row");
-            return row ? row.querySelector(".cin-rsvp-party__name") : null;
-        }
-
-        function syncNameToPrimaryPartyRow(allowEmpty) {
-            var span = primaryPartyNameEl();
-            if (!nameInput || !span) {
-                return;
-            }
-            var v = (nameInput.value || "").trim();
-            if (v.length === 0 && !allowEmpty) {
-                return;
-            }
-            span.textContent = v;
-        }
 
         function togglePartyVisibility() {
             if (!partyFieldset || !attendYes || !attendNo) {
@@ -241,16 +221,6 @@
             cb.addEventListener("change", clearClientPartyErr);
         });
         togglePartyVisibility();
-
-        if (nameInput) {
-            nameInput.addEventListener("input", function () {
-                syncNameToPrimaryPartyRow(true);
-            });
-            nameInput.addEventListener("change", function () {
-                syncNameToPrimaryPartyRow(true);
-            });
-            syncNameToPrimaryPartyRow(false);
-        }
 
         form.addEventListener("submit", function (e) {
             if (typeof form.reportValidity === "function" && !form.reportValidity()) {

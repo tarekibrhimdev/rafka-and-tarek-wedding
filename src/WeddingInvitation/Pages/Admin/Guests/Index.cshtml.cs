@@ -255,7 +255,7 @@ public class IndexModel(
                 g.Email,
                 g.Phone,
                 g.FamilyMembers.Count,
-                Math.Max(1, 1 + g.FamilyMembers.Count),
+                Math.Max(1, g.FamilyMembers.Count),
                 inv is not null,
                 url,
                 inv?.Token,

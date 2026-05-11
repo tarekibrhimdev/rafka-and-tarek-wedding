@@ -28,7 +28,11 @@ public class InviteModel(WeddingDbContext db, IConfiguration configuration, IWeb
     public string GuestDisplayName { get; private set; } = string.Empty;
     public int PartyMax { get; private set; } = 1;
     public IReadOnlyList<PartySlotVm> PartySlots { get; private set; } = [];
+    /// <summary>True after a successful RSVP POST redirect (yes or no).</summary>
     public bool RsvpSuccess { get; private set; }
+
+    /// <summary>True when the guest chose attending yes (excludes decline path).</summary>
+    public bool RsvpAttendingYes { get; private set; }
 
     public string CoupleLine { get; private set; } = string.Empty;
     public string InviteCopyJson { get; private set; } = "{}";
@@ -77,7 +81,10 @@ public class InviteModel(WeddingDbContext db, IConfiguration configuration, IWeb
         if (invitation is null)
             return NotFound();
 
-        RsvpSuccess = TempData["RsvpSuccess"] as string == "1";
+        var rsvpFlash = TempData["RsvpSuccess"] as string;
+        // "yes" | "no" after submit; legacy "1" treated as yes-only success.
+        RsvpSuccess = rsvpFlash is "yes" or "no" or "1";
+        RsvpAttendingYes = rsvpFlash is "yes" or "1";
         await HydratePageModelAsync(token, invitation);
         return Page();
     }
@@ -135,7 +142,7 @@ public class InviteModel(WeddingDbContext db, IConfiguration configuration, IWeb
             });
 
         await db.SaveChangesAsync(cancellationToken);
-        TempData["RsvpSuccess"] = "1";
+        TempData["RsvpSuccess"] = attending == "yes" ? "yes" : "no";
         return RedirectToPage(new { token });
     }
 
@@ -179,13 +186,17 @@ public class InviteModel(WeddingDbContext db, IConfiguration configuration, IWeb
         var extraFmt =
             enCopy.TryGetValue("cin_rsvp_party_extra_fmt", out var ef) ? ef : "Guest {0}";
 
-        var slots = new List<PartySlotVm> { new(0, invitation.Guest.DisplayName, null) };
+        // One checkbox per GuestFamilyMembers row (admin). "Invitation for" uses Guest.DisplayName in the name field only.
+        var slots = new List<PartySlotVm>();
         var members = invitation.Guest.FamilyMembers.OrderBy(m => m.SortOrder).ToList();
         foreach (var m in members)
         {
             if (slots.Count >= max)
                 break;
-            slots.Add(new PartySlotVm(slots.Count, m.FullName, null));
+            var label = (m.FullName ?? "").Trim();
+            if (label.Length == 0)
+                continue;
+            slots.Add(new PartySlotVm(slots.Count, label, null));
         }
 
         var n = 1;

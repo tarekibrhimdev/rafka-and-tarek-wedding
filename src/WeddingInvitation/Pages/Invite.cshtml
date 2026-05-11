@@ -14,7 +14,7 @@
     string CinImg(string f) => Url.Content($"~/cinematic-invite/images/{f}");
 }
 
-<div id="invite-root" class="invite-root lang-en" data-cin-after-rsvp-success="@(Model.RsvpSuccess ? "true" : "false")">
+<div id="invite-root" class="invite-root lang-en" data-cin-after-rsvp-success="@(Model.RsvpSuccess ? "true" : "false")" data-cin-rsvp-auto-advance-finale="@(Model.RsvpSuccess && Model.RsvpAttendingYes ? "true" : "false")">
     <script type="application/json" id="invite-copy-json">@Html.Raw(Model.InviteCopyJson)</script>
     <div id="cin-loader" class="cin-loader" aria-busy="true" aria-live="polite">
         <div class="cin-loader__inner">
@@ -360,8 +360,19 @@
                                     </div>
                                 </form>
                                 <div class="cin-rsvp__success@(Model.RsvpSuccess ? " is-visible" : "")" id="cin-rsvp-success" role="status">
-                                    <p class="cin-display-md" data-i18n-key="cin_rsvp_success_1">@En("cin_rsvp_success_1")</p>
-                                    <p class="cin-body" style="margin-top: 0.75rem" data-i18n-key="cin_rsvp_success_2">@En("cin_rsvp_success_2")</p>
+                                    @if (Model.RsvpSuccess)
+                                    {
+                                        if (Model.RsvpAttendingYes)
+                                        {
+                                            <p class="cin-display-md" data-i18n-key="cin_rsvp_success_1">@En("cin_rsvp_success_1")</p>
+                                            <p class="cin-body" style="margin-top: 0.75rem" data-i18n-key="cin_rsvp_success_2">@En("cin_rsvp_success_2")</p>
+                                        }
+                                        else
+                                        {
+                                            <p class="cin-display-md" data-i18n-key="cin_rsvp_decline_success_1">@En("cin_rsvp_decline_success_1")</p>
+                                            <p class="cin-body" style="margin-top: 0.75rem" data-i18n-key="cin_rsvp_decline_success_2">@En("cin_rsvp_decline_success_2")</p>
+                                        }
+                                    }
                                 </div>
                             </div>
                         </div>

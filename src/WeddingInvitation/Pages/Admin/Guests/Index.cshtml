@@ -28,7 +28,7 @@
             <table class="table admin-table table-hover align-middle mb-0">
                 <thead>
                     <tr>
-                        <th>Guest</th>
+                        <th>Invitation For</th>
                         <th>Contact</th>
                         <th class="text-center">Persons (total)</th>
                         <th>Invitation</th>
@@ -169,7 +169,7 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label asp-for="CreateInput.DisplayName" class="form-label">Primary guest name</label>
+                            <label asp-for="CreateInput.DisplayName" class="form-label">Invitation For</label>
                             <input asp-for="CreateInput.DisplayName" class="form-control" autocomplete="off" />
                             <span asp-validation-for="CreateInput.DisplayName" class="text-danger small"></span>
                         </div>
@@ -222,7 +222,7 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label asp-for="EditInput.DisplayName" class="form-label">Primary guest name</label>
+                            <label asp-for="EditInput.DisplayName" class="form-label">Invitation For</label>
                             <input asp-for="EditInput.DisplayName" class="form-control" id="editDisplayName" autocomplete="off" />
                             <span asp-validation-for="EditInput.DisplayName" class="text-danger small"></span>
                         </div>
