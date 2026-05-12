@@ -22,6 +22,59 @@
     </div>
 }
 
+<div class="card admin-card shadow-sm mb-3 admin-guests-toolbar">
+    <div class="card-body py-3">
+        @{
+            var statusOptions = new (string Value, string Label)[]
+            {
+                ("all", "All guests"),
+                ("no-invite", "No invitation yet"),
+                ("pending", "RSVP pending"),
+                ("approved", "RSVP approved"),
+                ("declined", "RSVP declined"),
+            };
+        }
+        <form method="get" class="row g-2 align-items-end" asp-page="/Admin/Guests/Index">
+            <div class="col-12 col-md-5 col-lg-4">
+                <label class="form-label small text-muted mb-1" for="guestSearch">Search</label>
+                <input type="search"
+                       id="guestSearch"
+                       name="q"
+                       value="@Model.GuestSearch"
+                       class="form-control form-control-sm"
+                       placeholder="Name, email, phone, household…"
+                       autocomplete="off" />
+            </div>
+            <div class="col-12 col-md-4 col-lg-3">
+                <label class="form-label small text-muted mb-1" for="guestStatus">Invite &amp; RSVP</label>
+                <select id="guestStatus" name="status" class="form-select form-select-sm">
+                    @foreach (var o in statusOptions)
+                    {
+                        if (Model.IsStatusFilter(o.Value))
+                        {
+                            <option value="@o.Value" selected>@o.Label</option>
+                        }
+                        else
+                        {
+                            <option value="@o.Value">@o.Label</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-auto d-flex flex-wrap gap-2 align-items-center pt-2 pt-md-0">
+                <button type="submit" class="btn btn-sm btn-outline-secondary">Apply</button>
+                @if (Model.HasActiveFilters)
+                {
+                    <a class="btn btn-sm btn-link px-0" asp-page="/Admin/Guests/Index">Clear filters</a>
+                }
+            </div>
+        </form>
+        <p class="small text-muted mb-0 mt-2 admin-guests-toolbar__hint">
+            Showing <strong>@Model.Guests.Count</strong> of <strong>@Model.TotalGuestsAll</strong> guest@(Model.TotalGuestsAll == 1 ? "" : "s")
+        </p>
+    </div>
+</div>
+
 <div class="card admin-card shadow-sm">
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -146,7 +199,18 @@
                 {
                     <tr>
                         <td colspan="6" class="text-center text-muted py-5">
-                            No guests yet. Use <strong>Add guest</strong> to create your first invitee.
+                            @if (Model.TotalGuestsAll == 0)
+                            {
+                                <text>No guests yet. Use <strong>Add guest</strong> to create your first invitee.</text>
+                            }
+                            else if (Model.HasActiveFilters)
+                            {
+                                <text>No guests match these filters. Try clearing filters or using a shorter search.</text>
+                            }
+                            else
+                            {
+                                <text>No guests to show.</text>
+                            }
                         </td>
                     </tr>
                 }
@@ -161,6 +225,8 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <form method="post" asp-page-handler="Create">
+                <input type="hidden" name="q" value="@Model.GuestSearch" />
+                <input type="hidden" name="status" value="@Model.StatusFilterNormalized" />
                 <div class="modal-header border-0 pb-0">
                     <h5 class="modal-title fw-semibold" id="createGuestModalLabel">New guest</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -213,6 +279,8 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <form method="post" asp-page-handler="Update">
+                <input type="hidden" name="q" value="@Model.GuestSearch" />
+                <input type="hidden" name="status" value="@Model.StatusFilterNormalized" />
                 <input type="hidden" asp-for="EditInput.GuestId" id="editGuestId" />
                 <div class="modal-header border-0 pb-0">
                     <h5 class="modal-title fw-semibold" id="editGuestModalLabel">Edit guest</h5>
@@ -259,6 +327,8 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <form method="post" asp-page-handler="Delete">
+                <input type="hidden" name="q" value="@Model.GuestSearch" />
+                <input type="hidden" name="status" value="@Model.StatusFilterNormalized" />
                 <input type="hidden" asp-for="DeleteGuestId" id="deleteGuestId" />
                 <div class="modal-header border-0">
                     <h5 class="modal-title fw-semibold">Remove guest</h5>
@@ -281,6 +351,8 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <form method="post" asp-page-handler="GenerateInvitation">
+                <input type="hidden" name="q" value="@Model.GuestSearch" />
+                <input type="hidden" name="status" value="@Model.StatusFilterNormalized" />
                 <input type="hidden" asp-for="GenerateGuestId" id="generateGuestId" />
                 <div class="modal-header border-0 pb-0">
                     <h5 class="modal-title fw-semibold" id="generateInviteTitle">Invitation</h5>

@@ -17,6 +17,26 @@ public class IndexModel(
 {
     public IReadOnlyList<GuestRowVm> Guests { get; private set; } = [];
 
+    /// <summary>Total guests in the database (ignores list filters).</summary>
+    public int TotalGuestsAll { get; private set; }
+
+    [BindProperty(Name = "q", SupportsGet = true)]
+    public string? GuestSearch { get; set; }
+
+    /// <summary>all | no-invite | pending | approved | declined</summary>
+    [BindProperty(Name = "status", SupportsGet = true)]
+    public string StatusFilter { get; set; } = "all";
+
+    public bool HasActiveFilters =>
+        !string.IsNullOrWhiteSpace(GuestSearch)
+        || !string.Equals(NormalizeStatusFilter(StatusFilter), "all", StringComparison.OrdinalIgnoreCase);
+
+    public bool IsStatusFilter(string expected) =>
+        string.Equals(NormalizeStatusFilter(StatusFilter), expected, StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>Value to round-trip in POST forms (normalized status slug).</summary>
+    public string StatusFilterNormalized => NormalizeStatusFilter(StatusFilter);
+
     /// <summary>
     /// Used for GET / invalid POST repopulation (not bound globally — avoids cross-handler validation failures).
     /// </summary>
@@ -35,7 +55,7 @@ public class IndexModel(
 
     public async Task OnGetAsync(CancellationToken cancellationToken)
     {
-        Guests = await LoadGuestRowsAsync(cancellationToken);
+        await PreparePageListAsync(cancellationToken);
     }
 
     public async Task<IActionResult> OnGetGuestJsonAsync(Guid id, CancellationToken cancellationToken)
@@ -74,7 +94,7 @@ public class IndexModel(
 
         if (!TryValidateModel(createInput, nameof(CreateInput)))
         {
-            Guests = await LoadGuestRowsAsync(cancellationToken);
+            await PreparePageListAsync(cancellationToken);
             return Page();
         }
 
@@ -102,7 +122,7 @@ public class IndexModel(
         await db.SaveChangesAsync(cancellationToken);
 
         TempData["Toast"] = $"Guest “{guest.DisplayName}” created.";
-        return RedirectToPage();
+        return RedirectToPage(FilterRoute());
     }
 
     public async Task<IActionResult> OnPostUpdateAsync(
@@ -113,7 +133,7 @@ public class IndexModel(
 
         if (!TryValidateModel(editInput, nameof(EditInput)))
         {
-            Guests = await LoadGuestRowsAsync(cancellationToken);
+            await PreparePageListAsync(cancellationToken);
             return Page();
         }
 
@@ -151,7 +171,7 @@ public class IndexModel(
         await db.SaveChangesAsync(cancellationToken);
 
         TempData["Toast"] = $"Guest “{guest.DisplayName}” updated.";
-        return RedirectToPage();
+        return RedirectToPage(FilterRoute());
     }
 
     public async Task<IActionResult> OnPostDeleteAsync(CancellationToken cancellationToken)
@@ -185,7 +205,7 @@ public class IndexModel(
         await db.SaveChangesAsync(cancellationToken);
 
         TempData["Toast"] = $"Guest “{guest.DisplayName}” removed.";
-        return RedirectToPage();
+        return RedirectToPage(FilterRoute());
     }
 
     public async Task<IActionResult> OnPostGenerateInvitationAsync(CancellationToken cancellationToken)
@@ -193,7 +213,7 @@ public class IndexModel(
         if (MaxPersons < 1 || MaxPersons > 99)
         {
             ModelState.AddModelError(string.Empty, "Party size must be between 1 and 99.");
-            Guests = await LoadGuestRowsAsync(cancellationToken);
+            await PreparePageListAsync(cancellationToken);
             return Page();
         }
 
@@ -233,13 +253,67 @@ public class IndexModel(
 
         TempData["Toast"] = $"Invitation generated for “{guest.DisplayName}”.";
         TempData["HighlightGuestId"] = guest.Id.ToString();
-        return RedirectToPage();
+        return RedirectToPage(FilterRoute());
+    }
+
+    private async Task PreparePageListAsync(CancellationToken cancellationToken)
+    {
+        TotalGuestsAll = await db.Guests.AsNoTracking().CountAsync(cancellationToken);
+        Guests = await LoadGuestRowsAsync(cancellationToken);
+    }
+
+    private object? FilterRoute()
+    {
+        var q = string.IsNullOrWhiteSpace(GuestSearch) ? null : GuestSearch.Trim();
+        var st = NormalizeStatusFilter(StatusFilter);
+        if (q is null && string.Equals(st, "all", StringComparison.OrdinalIgnoreCase))
+            return null;
+        return new { q, status = st };
+    }
+
+    private static string NormalizeStatusFilter(string? value)
+    {
+        var s = (value ?? "all").Trim().ToLowerInvariant();
+        return s switch
+        {
+            "no-invite" or "pending" or "approved" or "declined" or "all" => s,
+            _ => "all"
+        };
     }
 
     private async Task<IReadOnlyList<GuestRowVm>> LoadGuestRowsAsync(CancellationToken cancellationToken)
     {
-        var guests = await db.Guests
-            .AsNoTracking()
+        var term = GuestSearch?.Trim();
+        var status = NormalizeStatusFilter(StatusFilter);
+
+        IQueryable<Guest> query = db.Guests.AsNoTracking();
+
+        if (!string.IsNullOrEmpty(term))
+        {
+            query = query.Where(g =>
+                g.DisplayName.Contains(term)
+                || (g.Email != null && g.Email.Contains(term))
+                || (g.Phone != null && g.Phone.Contains(term))
+                || g.FamilyMembers.Any(m => m.FullName.Contains(term)));
+        }
+
+        switch (status)
+        {
+            case "no-invite":
+                query = query.Where(g => g.Invitation == null);
+                break;
+            case "pending":
+                query = query.Where(g => g.Invitation != null && g.Invitation.RsvpStatus == RsvpStatus.Pending);
+                break;
+            case "approved":
+                query = query.Where(g => g.Invitation != null && g.Invitation.RsvpStatus == RsvpStatus.Approved);
+                break;
+            case "declined":
+                query = query.Where(g => g.Invitation != null && g.Invitation.RsvpStatus == RsvpStatus.Declined);
+                break;
+        }
+
+        var guests = await query
             .Include(g => g.FamilyMembers)
             .Include(g => g.Invitation)
             .OrderBy(g => g.DisplayName)
@@ -249,13 +323,15 @@ public class IndexModel(
         {
             var inv = g.Invitation;
             var url = inv is null ? null : linkBuilder.BuildInvitationUrl(inv.Token);
+            var familyCount = g.FamilyMembers.Count;
+            var totalPersonCount = 1 + familyCount;
             return new GuestRowVm(
                 g.Id,
                 g.DisplayName,
                 g.Email,
                 g.Phone,
-                g.FamilyMembers.Count,
-                Math.Max(1, g.FamilyMembers.Count),
+                familyCount,
+                totalPersonCount,
                 inv is not null,
                 url,
                 inv?.Token,

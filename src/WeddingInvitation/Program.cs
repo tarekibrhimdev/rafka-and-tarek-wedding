@@ -1,9 +1,16 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WeddingInvitation.Data;
 using WeddingInvitation.Security;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
+});
 
 builder.Services.AddDbContext<WeddingDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -39,6 +46,8 @@ builder.Services.AddRazorPages(options =>
 });
 
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 await DbInitializer.SeedAdminAsync(app.Services);
 

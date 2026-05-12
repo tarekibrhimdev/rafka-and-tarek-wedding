@@ -6,7 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
     <meta name="robots" content="noindex,nofollow" />
     <meta name="theme-color" content="#ebe4d6" />
-    <meta name="description" content="Wedding invitation" />
+    @{
+        var shareDesc = ViewData["OgDescription"] as string ?? "Wedding invitation";
+        var ogTitle = ViewData["OgTitle"] as string ?? ViewData["Title"] as string ?? "Wedding invitation";
+        var ogImage = ViewData["OgImage"] as string ?? "";
+        var ogUrl = ViewData["OgUrl"] as string ?? "";
+    }
+    <meta name="description" content="@shareDesc" />
+    @if (!string.IsNullOrWhiteSpace(ogImage))
+    {
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="@ogTitle" />
+        <meta property="og:description" content="@shareDesc" />
+        <meta property="og:image" content="@ogImage" />
+        <meta property="og:image:alt" content="@ogTitle" />
+        @if (!string.IsNullOrWhiteSpace(ogUrl))
+        {
+            <meta property="og:url" content="@ogUrl" />
+        }
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="@ogTitle" />
+        <meta name="twitter:description" content="@shareDesc" />
+        <meta name="twitter:image" content="@ogImage" />
+    }
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />

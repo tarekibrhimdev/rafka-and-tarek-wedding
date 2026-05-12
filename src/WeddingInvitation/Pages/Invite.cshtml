@@ -3,6 +3,10 @@
 @{
     Layout = "_CinematicInvitationLayout";
     ViewData["Title"] = "Invitation · " + Model.CoupleLine;
+    ViewData["OgTitle"] = ViewData["Title"];
+    ViewData["OgDescription"] = Model.OgShareDescription;
+    ViewData["OgImage"] = Model.OgImageAbsoluteUrl;
+    ViewData["OgUrl"] = Model.OgCanonicalUrl;
     string En(string key) => Model.CopyEn.TryGetValue(key, out var v) ? v : "";
     string CapFmt() => string.Format(En("cin_rsvp_party_cap_fmt"), Model.PartyMax);
     var coupleParts = Model.CoupleLine.Split('&', 2, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
@@ -226,7 +230,15 @@
                                                 aria-label="@En("cin_maps_open_aria")"
                                             >
                                                 <div class="cin-dest-card__preview">
-                                                    <img class="cin-dest-card__map" src="@Model.ChurchStaticMapPreviewUrl" alt="" width="1280" height="800" loading="lazy" decoding="async" />
+                                                    <img
+                                                        class="cin-dest-card__map"
+                                                        src="@Model.ChurchStaticMapPreviewUrl"
+                                                        alt=""
+                                                        width="1280"
+                                                        height="800"
+                                                        loading="lazy"
+                                                        decoding="async"
+                                                        onerror="this.style.display='none'" />
                                                     <div class="cin-dest-card__carto" aria-hidden="true"></div>
                                                     <div class="cin-dest-card__shade" aria-hidden="true"></div>
                                                     <div class="cin-dest-card__tint" aria-hidden="true"></div>
@@ -257,7 +269,15 @@
                                                 aria-label="@En("cin_maps_open_aria")"
                                             >
                                                 <div class="cin-dest-card__preview">
-                                                    <img class="cin-dest-card__map" src="@Model.VenueStaticMapPreviewUrl" alt="" width="1280" height="800" loading="lazy" decoding="async" />
+                                                    <img
+                                                        class="cin-dest-card__map"
+                                                        src="@Model.VenueStaticMapPreviewUrl"
+                                                        alt=""
+                                                        width="1280"
+                                                        height="800"
+                                                        loading="lazy"
+                                                        decoding="async"
+                                                        onerror="this.style.display='none'" />
                                                     <div class="cin-dest-card__carto" aria-hidden="true"></div>
                                                     <div class="cin-dest-card__shade" aria-hidden="true"></div>
                                                     <div class="cin-dest-card__tint" aria-hidden="true"></div>

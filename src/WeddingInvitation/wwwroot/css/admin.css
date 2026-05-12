@@ -278,3 +278,11 @@ html {
 .login-card .card-body {
     padding: 2rem 2rem 1.75rem;
 }
+
+.admin-guests-toolbar .form-label {
+    font-weight: 500;
+}
+
+.admin-guests-toolbar__hint strong {
+    color: #0f172a;
+}

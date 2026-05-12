@@ -49,6 +49,14 @@ public class InviteModel(WeddingDbContext db, IConfiguration configuration, IWeb
     /// <summary>Cache-busted URL for location-slide background (CSS url()).</summary>
     public string LocationHeroUrl { get; private set; } = string.Empty;
 
+    /// <summary>Absolute image URL for Open Graph / WhatsApp link previews.</summary>
+    public string OgImageAbsoluteUrl { get; private set; } = string.Empty;
+
+    public string OgShareDescription { get; private set; } = string.Empty;
+
+    /// <summary>Canonical URL of this invite (scheme + host + path + query).</summary>
+    public string OgCanonicalUrl { get; private set; } = string.Empty;
+
     /// <summary>
     /// Lightweight static terrain preview (not an embed). Styled in CSS as monochrome editorial art — no Google UI, no iframe.
     /// </summary>
@@ -175,7 +183,35 @@ public class InviteModel(WeddingDbContext db, IConfiguration configuration, IWeb
         var heroVer = global::System.IO.File.Exists(heroFs) ? global::System.IO.File.GetLastWriteTimeUtc(heroFs).Ticks : 0L;
         LocationHeroUrl = $"{Url.Content("~/cinematic-invite/images/location-couple-hero.png")}?v={heroVer}";
 
+        OgShareDescription = CopyEn.TryGetValue("slide2_intro", out var intro) ? intro :
+            CopyEn.TryGetValue("slide0_tagline", out var tag) ? tag :
+            "Wedding invitation";
+
+        // Same opening-slide asset as Invite.cshtml — PNG works for WhatsApp; SVG does not.
+        var ogFs = Path.Combine(env.WebRootPath, "cinematic-invite", "images", "hero-opening.png");
+        var ogVer = global::System.IO.File.Exists(ogFs) ? global::System.IO.File.GetLastWriteTimeUtc(ogFs).Ticks : 0L;
+        var ogPath = $"{Url.Content("~/cinematic-invite/images/hero-opening.png")}?v={ogVer}";
+        var req = HttpContext.Request;
+        var origin = ResolvePublicSiteOrigin(req);
+        OgImageAbsoluteUrl = $"{origin}{ogPath}";
+        OgCanonicalUrl = $"{origin}{req.PathBase}{req.Path}{req.QueryString}";
+
         return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// OG / WhatsApp need absolute HTTPS URLs. Use <c>PublicSite:BaseUrl</c> in production so links don’t point at the internal host or http:// behind a proxy.
+    /// </summary>
+    private string ResolvePublicSiteOrigin(HttpRequest req)
+    {
+        var configured = (configuration["PublicSite:BaseUrl"] ?? "").Trim().TrimEnd('/');
+        if (string.IsNullOrEmpty(configured))
+            return $"{req.Scheme}://{req.Host.Value}";
+
+        if (!configured.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            configured = "https://" + configured.TrimStart('/');
+
+        return configured;
     }
 
     private static IReadOnlyList<PartySlotVm> BuildPartySlots(
