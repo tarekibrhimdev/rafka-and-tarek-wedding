@@ -304,3 +304,23 @@ html {
 .admin-seating-table-card .list-group-item {
     background: transparent;
 }
+
+.admin-seating-unassigned-scroll {
+    max-height: min(70vh, 560px);
+    overflow-y: auto;
+}
+
+.admin-seating-unassigned-scroll thead.sticky-top {
+    z-index: 2;
+    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.08);
+}
+
+.admin-seating-tables-scroll {
+    max-height: min(75vh, 720px);
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.admin-seating-toolbar #seatingSearchFilter {
+    max-width: 28rem;
+}

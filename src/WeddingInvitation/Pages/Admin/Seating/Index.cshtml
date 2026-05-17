@@ -75,15 +75,28 @@
     </div>
 </div>
 
+<div class="card admin-card shadow-sm mb-3 admin-seating-toolbar">
+    <div class="card-body py-3">
+        <label class="form-label small text-muted mb-1" for="seatingSearchFilter">Find on this page</label>
+        <input type="search"
+               id="seatingSearchFilter"
+               class="form-control form-control-sm"
+               placeholder="Household name, table name, RSVP note, seated guest…"
+               autocomplete="off"
+               aria-describedby="seatingSearchHint" />
+        <p class="small text-muted mb-0 mt-2" id="seatingSearchHint" aria-live="polite"></p>
+    </div>
+</div>
+
 <div class="row g-4">
     <div class="col-lg-5">
         <div class="card admin-card shadow-sm h-100">
             <div class="card-body">
                 <h2 class="h5 fw-semibold mb-1">Unassigned households</h2>
-                <p class="small text-muted mb-3">Choose a table for each row. Declined RSVPs show 0 seats and cannot be assigned.</p>
-                <div class="table-responsive">
+                <p class="small text-muted mb-2">Choose a table for each row. Declined RSVPs show 0 seats and cannot be assigned.</p>
+                <div class="table-responsive admin-seating-unassigned-scroll border rounded">
                     <table class="table table-sm align-middle mb-0 admin-table">
-                        <thead>
+                        <thead class="sticky-top bg-white">
                             <tr>
                                 <th>Household</th>
                                 <th class="text-center">Seats</th>
@@ -91,10 +104,11 @@
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="seatingUnassignedBody">
                         @foreach (var g in Model.UnassignedGuests)
                         {
-                            <tr>
+                            var searchBlob = $"{g.DisplayName} {g.BasisNote} {g.RsvpLabel} {g.Seats}".ToLowerInvariant();
+                            <tr class="seating-unassigned-row" data-seating-text="@searchBlob">
                                 <td>
                                     <div class="fw-semibold small">@g.DisplayName</div>
                                     <div class="text-muted small" style="max-width:14rem;">@g.BasisNote</div>
@@ -145,10 +159,13 @@
                         }
                         @if (!Model.UnassignedGuests.Any())
                         {
-                            <tr>
+                            <tr class="seating-unassigned-placeholder">
                                 <td colspan="4" class="text-center text-muted py-4 small">Everyone listed is assigned.</td>
                             </tr>
                         }
+                        <tr id="seatingUnassignedNoHits" class="d-none">
+                            <td colspan="4" class="text-center text-muted py-4 small">No unassigned households match your search.</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -157,11 +174,12 @@
     </div>
     <div class="col-lg-7">
         <h2 class="h5 fw-semibold mb-3">Tables</h2>
-        <div class="d-flex flex-column gap-3">
+        <div class="d-flex flex-column gap-3 admin-seating-tables-scroll">
             @foreach (var t in Model.Tables)
             {
                 var pct = t.Capacity > 0 ? Math.Min(100, Math.Round(100d * t.UsedSeats / t.Capacity, 1)) : 0;
-                <div class="card admin-card shadow-sm admin-seating-table-card">
+                var tableSearchBlob = string.Join(" ", new[] { t.Name }.Concat(t.AssignedGuests.SelectMany(r => new[] { r.DisplayName, r.BasisNote }))).ToLowerInvariant();
+                <div class="card admin-card shadow-sm admin-seating-table-card" data-seating-text="@tableSearchBlob">
                     <div class="card-body py-3">
                         <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
                             <div>
@@ -221,7 +239,7 @@
             }
             @if (!Model.Tables.Any())
             {
-                <div class="card admin-card shadow-sm">
+                <div class="card admin-card shadow-sm admin-seating-no-tables-msg">
                     <div class="card-body text-muted small py-4 text-center">
                         No tables yet — create one above to start seating guests.
                     </div>
@@ -288,6 +306,61 @@
     <partial name="_ValidationScriptsPartial" />
     <script>
         (function () {
+            const filterInput = document.getElementById('seatingSearchFilter');
+            const hint = document.getElementById('seatingSearchHint');
+            const unassignedRows = document.querySelectorAll('tr.seating-unassigned-row');
+            const unassignedNoHits = document.getElementById('seatingUnassignedNoHits');
+            const unassignedPlaceholder = document.querySelector('tr.seating-unassigned-placeholder');
+            const tableCards = document.querySelectorAll('.admin-seating-table-card[data-seating-text]');
+            const noTablesMsg = document.querySelector('.admin-seating-no-tables-msg');
+
+            function applySeatingFilter() {
+                const raw = (filterInput?.value || '').trim().toLowerCase();
+                let unassignedVisible = 0;
+                let tablesVisible = 0;
+
+                unassignedRows.forEach(tr => {
+                    const blob = (tr.getAttribute('data-seating-text') || '').toLowerCase();
+                    const show = !raw || blob.includes(raw);
+                    tr.classList.toggle('d-none', !show);
+                    if (show) unassignedVisible++;
+                });
+
+                if (unassignedNoHits) {
+                    const hasRows = unassignedRows.length > 0;
+                    const showNoHits = hasRows && raw && unassignedVisible === 0;
+                    unassignedNoHits.classList.toggle('d-none', !showNoHits);
+                }
+
+                tableCards.forEach(card => {
+                    const blob = (card.getAttribute('data-seating-text') || '').toLowerCase();
+                    const show = !raw || blob.includes(raw);
+                    card.classList.toggle('d-none', !show);
+                    if (show) tablesVisible++;
+                });
+
+                if (noTablesMsg && raw) {
+                    noTablesMsg.classList.toggle('d-none', true);
+                } else if (noTablesMsg) {
+                    noTablesMsg.classList.toggle('d-none', false);
+                }
+
+                if (hint) {
+                    const parts = [];
+                    if (unassignedRows.length)
+                        parts.push(`${unassignedVisible} unassigned row${unassignedVisible === 1 ? '' : 's'}`);
+                    if (tableCards.length)
+                        parts.push(`${tablesVisible} table${tablesVisible === 1 ? '' : 's'}`);
+                    hint.textContent = raw
+                        ? (parts.length ? `Showing ${parts.join(' · ')}.` : '')
+                        : (unassignedRows.length || tableCards.length ? 'Type to narrow unassigned households and tables.' : '');
+                }
+            }
+
+            filterInput?.addEventListener('input', applySeatingFilter);
+            filterInput?.addEventListener('search', applySeatingFilter);
+            applySeatingFilter();
+
             document.querySelectorAll('.btn-edit-table').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.getElementById('EditTable_TableId').value = btn.getAttribute('data-table-id');

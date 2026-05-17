@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using WeddingInvitation.Data;
 using WeddingInvitation.Security;
@@ -57,6 +58,30 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
     app.UseHttpsRedirection();
 }
+
+/* Admin UI: send users to login instead of a bare 403/401 page (must run before routing). */
+app.UseStatusCodePages(async context =>
+{
+    var httpContext = context.HttpContext;
+    if (httpContext.Response.HasStarted)
+        return;
+
+    var status = httpContext.Response.StatusCode;
+    if (status != StatusCodes.Status403Forbidden && status != StatusCodes.Status401Unauthorized)
+        return;
+
+    var path = httpContext.Request.Path.Value ?? "";
+    if (!path.StartsWith("/Admin", StringComparison.OrdinalIgnoreCase))
+        return;
+
+    if (path.StartsWith("/Account/", StringComparison.OrdinalIgnoreCase))
+        return;
+
+    var loginBase = $"{httpContext.Request.PathBase}/Account/Login";
+    var returnUrl = $"{httpContext.Request.PathBase}{httpContext.Request.Path}{httpContext.Request.QueryString}";
+    var target = QueryHelpers.AddQueryString(loginBase, "ReturnUrl", returnUrl);
+    httpContext.Response.Redirect(target);
+});
 
 /* Physical wwwroot — serves /cinematic-invite/* reliably in dev and prod (MapStaticAssets alone can miss newly added files until rebuild). */
 app.UseStaticFiles();

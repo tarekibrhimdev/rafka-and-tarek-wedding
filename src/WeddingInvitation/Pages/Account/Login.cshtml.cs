@@ -15,10 +15,17 @@ public class LoginModel(SignInManager<ApplicationUser> signInManager) : PageMode
 
     public string? ErrorMessage { get; set; }
 
+    [BindProperty(SupportsGet = true)]
+    public string? ReturnUrl { get; set; }
+
     public IActionResult OnGet()
     {
         if (User.Identity?.IsAuthenticated == true)
+        {
+            if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
+                return LocalRedirect(ReturnUrl);
             return RedirectToPage("/Admin/Index");
+        }
 
         return Page();
     }

@@ -5,12 +5,22 @@ namespace WeddingInvitation.Services;
 public static class SeatingHeadcount
 {
     /// <summary>
+    /// Persons counted from the guest record when RSVP does not supply a headcount.
+    /// Matches the admin Guests list: each named household row counts as one person; no rows ⇒ primary guest only (1).
+    /// </summary>
+    public static int GetHouseholdPersonEstimate(Guest guest)
+    {
+        var n = guest.FamilyMembers.Count;
+        return n == 0 ? 1 : n;
+    }
+
+    /// <summary>
     /// Seats consumed when this household sits together at one table.
-    /// Approved + ComingCount → use that; declined → 0; otherwise estimate from household row + RSVP hint.
+    /// Approved + ComingCount → use that; declined → 0; otherwise estimate from guest record (see <see cref="GetHouseholdPersonEstimate"/>).
     /// </summary>
     public static int GetSeatCount(Guest guest, Invitation? invitation)
     {
-        var householdOnRecord = 1 + guest.FamilyMembers.Count;
+        var householdOnRecord = GetHouseholdPersonEstimate(guest);
 
         if (invitation is null)
             return householdOnRecord;
@@ -25,7 +35,7 @@ public static class SeatingHeadcount
 
     public static string GetSeatBasisNote(Guest guest, Invitation? invitation)
     {
-        var householdOnRecord = 1 + guest.FamilyMembers.Count;
+        var householdOnRecord = GetHouseholdPersonEstimate(guest);
 
         if (invitation is null)
             return "Household on record (no invite).";

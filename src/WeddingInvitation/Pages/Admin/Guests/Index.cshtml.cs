@@ -349,7 +349,7 @@ public class IndexModel(
             var inv = g.Invitation;
             var url = inv is null ? null : linkBuilder.BuildInvitationUrl(inv.Token);
             var familyCount = g.FamilyMembers.Count;
-            var totalPersonCount = familyCount;
+            var totalPersonCount = SeatingHeadcount.GetHouseholdPersonEstimate(g);
             return new GuestRowVm(
                 g.Id,
                 g.DisplayName,

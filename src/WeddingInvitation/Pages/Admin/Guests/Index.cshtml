@@ -159,7 +159,7 @@
                         </td>
                         <td class="text-center">
                             <span class="badge rounded-pill bg-light text-dark border"
-                                  title="@(g.FamilyMemberCount == 0 ? "Primary guest only — no additional household members on record." : $"Total headcount: primary guest plus {g.FamilyMemberCount} household member{(g.FamilyMemberCount == 1 ? "" : "s")}.")">
+                                  title="@(g.FamilyMemberCount == 0 ? "Primary guest only — no household name rows. Add rows if others share this invite." : $"{g.TotalPersonCount} person(s) counted from household name rows (matches seating when RSVP is pending).")">
                                 @g.TotalPersonCount @(g.TotalPersonCount == 1 ? "person" : "people")
                             </span>
                         </td>
@@ -405,7 +405,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="small text-muted">Set how many people this single invitation covers (public RSVP will offer from that number down to 1). Defaults to <strong>you + household</strong> from the guest record.</p>
+                    <p class="small text-muted">Set how many people this single invitation covers (public RSVP will offer from that number down to 1). Defaults to the <strong>person count on the guest record</strong> (named household rows; pending RSVPs and seating use the same rule).</p>
                     <p class="small text-muted mb-2 d-none" id="generatePartyHint" aria-live="polite"></p>
                     <label asp-for="MaxPersons" class="form-label">Party size</label>
                     <input asp-for="MaxPersons" class="form-control" type="number" min="1" max="99" id="generateMaxPersons" />
@@ -507,10 +507,10 @@
                         if (hint) {
                             const f = family !== null && family !== '' ? parseInt(family, 10) : NaN;
                             if (!Number.isNaN(f) && f > 0) {
-                                hint.textContent = 'Suggested ' + (parseInt(suggested, 10) || 1) + ' = primary guest + ' + f + ' household member' + (f === 1 ? '' : 's') + '. You can raise or lower this if needed.';
+                                hint.textContent = 'Suggested ' + (parseInt(suggested, 10) || 1) + ' — matches person count on this guest (' + f + ' household name row' + (f === 1 ? '' : 's') + ').';
                                 hint.classList.remove('d-none');
                             } else {
-                                hint.textContent = 'Suggested ' + (parseInt(suggested, 10) || 1) + ' (primary guest only). Add household members on the guest record to increase the default.';
+                                hint.textContent = 'Suggested ' + (parseInt(suggested, 10) || 1) + ' — primary guest only on the record; add household names to raise the default.';
                                 hint.classList.remove('d-none');
                             }
                         }
