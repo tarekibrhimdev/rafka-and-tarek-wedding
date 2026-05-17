@@ -71,7 +71,53 @@
         </form>
         <p class="small text-muted mb-0 mt-2 admin-guests-toolbar__hint">
             Showing <strong>@Model.Guests.Count</strong> of <strong>@Model.TotalGuestsAll</strong> guest@(Model.TotalGuestsAll == 1 ? "" : "s")
+            @if (Model.HasActiveFilters)
+            {
+                <span class="text-muted"> · Capacity totals below match this filtered list.</span>
+            }
         </p>
+    </div>
+</div>
+
+<div class="card admin-card shadow-sm mb-3 admin-capacity-strip">
+    <div class="card-body py-3">
+        @if (Model.ListRowsWithInvitation == 0)
+        {
+            <div class="small text-muted mb-0">
+                No invitations in this view — generate links to see <strong>seats offered</strong> (Σ party sizes) and <strong>confirmed attending</strong> (Σ RSVP headcounts).
+            </div>
+        }
+        else
+        {
+            var offered = Model.ListCapacityOffered;
+            var filled = Model.ListConfirmedAttending;
+            var fillPct = offered > 0 ? Math.Min(100, Math.Round(100d * filled / offered, 1)) : 0;
+            <div class="d-flex flex-wrap align-items-baseline justify-content-between gap-2 mb-2">
+                <div class="fw-semibold text-uppercase small letter-spacing text-muted mb-0">Invite capacity</div>
+                <div class="small text-muted">
+                    <strong class="text-dark">@filled</strong> confirmed attending
+                    · <strong class="text-dark">@offered</strong> seats offered (Σ Max)
+                    · <strong class="text-dark">@fillPct%</strong> of offered seats claimed
+                </div>
+            </div>
+            <div class="progress admin-capacity-progress" role="progressbar"
+                 aria-valuenow="@filled"
+                 aria-valuemin="0"
+                 aria-valuemax="@offered"
+                 aria-label="Confirmed attending as share of seats offered">
+                <div class="progress-bar bg-success" style="width: @(fillPct)%"></div>
+            </div>
+            <p class="small text-muted mb-0 mt-2">
+                Offered = sum of party sizes on generated invites in this table.
+                Filled = sum of “attending” counts where RSVP is approved (pending or declined invites still count toward offered capacity until you adjust links).
+                @if (Model.ListApprovedMissingHeadcount > 0)
+                {
+                    <span class="text-warning">
+                        @Model.ListApprovedMissingHeadcount approved invite@(Model.ListApprovedMissingHeadcount == 1 ? "" : "s") still need a headcount.
+                    </span>
+                }
+            </p>
+        }
     </div>
 </div>
 
@@ -378,6 +424,8 @@
     <partial name="_ValidationScriptsPartial" />
     <script>
         (function () {
+            /** Absolute app-relative URL so PathBase/virtual dirs work; cookies sent on same-origin GET. */
+            const guestJsonUrlBase = '@Url.Page("/Admin/Guests/Index", pageHandler: "GuestJson")';
             function reindexRows(container, namePrefix) {
                 const rows = container.querySelectorAll('.family-row');
                 rows.forEach((row, i) => {
@@ -482,7 +530,11 @@
             document.querySelectorAll('.btn-edit-guest').forEach(btn => {
                 btn.addEventListener('click', async () => {
                     const id = btn.getAttribute('data-guest-id');
-                    const res = await fetch('?handler=GuestJson&id=' + encodeURIComponent(id));
+                    const sep = guestJsonUrlBase.includes('?') ? '&' : '?';
+                    const res = await fetch(`${guestJsonUrlBase}${sep}id=${encodeURIComponent(id)}`, {
+                        credentials: 'same-origin',
+                        headers: { Accept: 'application/json' }
+                    });
                     if (!res.ok) return;
                     const data = await res.json();
                     document.getElementById('editGuestId').value = data.id;

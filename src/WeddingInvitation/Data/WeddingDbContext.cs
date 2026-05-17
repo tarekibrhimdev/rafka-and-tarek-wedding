@@ -10,6 +10,8 @@ public class WeddingDbContext(DbContextOptions<WeddingDbContext> options)
     public DbSet<GuestFamilyMember> GuestFamilyMembers => Set<GuestFamilyMember>();
     public DbSet<Invitation> Invitations => Set<Invitation>();
     public DbSet<InvitationAuditEntry> InvitationAuditEntries => Set<InvitationAuditEntry>();
+    public DbSet<ReceptionTable> ReceptionTables => Set<ReceptionTable>();
+    public DbSet<GuestTableAssignment> GuestTableAssignments => Set<GuestTableAssignment>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -65,6 +67,26 @@ public class WeddingDbContext(DbContextOptions<WeddingDbContext> options)
                 .WithMany(i => i.AuditEntries)
                 .HasForeignKey(a => a.InvitationId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<ReceptionTable>(e =>
+        {
+            e.Property(t => t.Name).HasMaxLength(120).IsRequired();
+        });
+
+        builder.Entity<GuestTableAssignment>(e =>
+        {
+            e.HasOne(a => a.Guest)
+                .WithOne(g => g.TableAssignment)
+                .HasForeignKey<GuestTableAssignment>(a => a.GuestId)
+                .OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(a => a.ReceptionTable)
+                .WithMany(t => t.Assignments)
+                .HasForeignKey(a => a.ReceptionTableId)
+                .OnDelete(DeleteBehavior.Cascade);
+            e.HasIndex(a => a.GuestId)
+                .IsUnique()
+                .HasFilter("IsRemoved = 0");
         });
 
         builder.Entity<ApplicationUser>(e =>

@@ -20,6 +20,18 @@ public class IndexModel(
     /// <summary>Total guests in the database (ignores list filters).</summary>
     public int TotalGuestsAll { get; private set; }
 
+    /// <summary>Σ MaxPersons for rows with an invitation (matches current list filters).</summary>
+    public int ListCapacityOffered { get; private set; }
+
+    /// <summary>Σ ComingCount for approved RSVPs in the current list (missing counts treated as 0).</summary>
+    public int ListConfirmedAttending { get; private set; }
+
+    /// <summary>Rows in the current list that have a generated invitation.</summary>
+    public int ListRowsWithInvitation { get; private set; }
+
+    /// <summary>Approved invitations in the list where ComingCount is still null.</summary>
+    public int ListApprovedMissingHeadcount { get; private set; }
+
     [BindProperty(Name = "q", SupportsGet = true)]
     public string? GuestSearch { get; set; }
 
@@ -260,6 +272,19 @@ public class IndexModel(
     {
         TotalGuestsAll = await db.Guests.AsNoTracking().CountAsync(cancellationToken);
         Guests = await LoadGuestRowsAsync(cancellationToken);
+        ComputeListCapacityStats();
+    }
+
+    private void ComputeListCapacityStats()
+    {
+        var withInvite = Guests.Where(g => g.HasInvitation).ToList();
+        ListRowsWithInvitation = withInvite.Count;
+        ListCapacityOffered = withInvite.Sum(g => g.MaxPersons);
+        ListConfirmedAttending = withInvite
+            .Where(g => g.RsvpStatus == RsvpStatus.Approved)
+            .Sum(g => g.ComingCount ?? 0);
+        ListApprovedMissingHeadcount = withInvite.Count(g =>
+            g.RsvpStatus == RsvpStatus.Approved && g.ComingCount is null);
     }
 
     private object? FilterRoute()
@@ -324,7 +349,7 @@ public class IndexModel(
             var inv = g.Invitation;
             var url = inv is null ? null : linkBuilder.BuildInvitationUrl(inv.Token);
             var familyCount = g.FamilyMembers.Count;
-            var totalPersonCount = 1 + familyCount;
+            var totalPersonCount = familyCount;
             return new GuestRowVm(
                 g.Id,
                 g.DisplayName,

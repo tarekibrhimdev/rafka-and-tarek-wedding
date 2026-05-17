@@ -1,0 +1,306 @@
+@page
+@model WeddingInvitation.Pages.Admin.Seating.IndexModel
+@{
+    ViewData["Title"] = "Seating";
+}
+
+<div class="admin-page-header">
+    <div>
+        <h1 class="admin-page-title">Seating</h1>
+        <p class="admin-page-subtitle text-muted">
+            Assign whole households to tables. Seat counts follow RSVP when available; otherwise we estimate from the guest record.
+        </p>
+    </div>
+    <a class="btn btn-outline-secondary" asp-page="/Admin/Guests/Index">Guest list</a>
+</div>
+
+@if (TempData["Toast"] is string toast)
+{
+    <div class="alert alert-admin-success alert-dismissible fade show" role="alert">
+        @toast
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small" role="alert"></div>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-4">
+        <div class="card admin-card shadow-sm h-100">
+            <div class="card-body py-3">
+                <div class="text-muted small text-uppercase fw-semibold letter-spacing">Tables</div>
+                <div class="display-6 fw-semibold mt-2">@Model.Tables.Count</div>
+                <div class="small text-muted mt-1">@Model.TotalTableCapacity total seats defined</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card admin-card shadow-sm h-100 border border-success border-opacity-25">
+            <div class="card-body py-3">
+                <div class="text-muted small text-uppercase fw-semibold letter-spacing">Seated</div>
+                <div class="display-6 fw-semibold mt-2 text-success">@Model.TotalSeatsAssigned</div>
+                <div class="small text-muted mt-1">Headcount assigned across tables</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card admin-card shadow-sm h-100">
+            <div class="card-body py-3">
+                <div class="text-muted small text-uppercase fw-semibold letter-spacing">Unassigned</div>
+                <div class="display-6 fw-semibold mt-2">@Model.UnassignedHouseholdCount</div>
+                <div class="small text-muted mt-1">Households not on any table yet</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card admin-card shadow-sm mb-3">
+    <div class="card-body py-3">
+        <h2 class="h6 fw-semibold mb-3">Add table</h2>
+        <form method="post" asp-page-handler="CreateTable" class="row g-2 align-items-end">
+            <div class="col-md-5 col-lg-4">
+                <label class="form-label small text-muted mb-1" asp-for="CreateTable.Name">Name</label>
+                <input asp-for="CreateTable.Name" class="form-control form-control-sm" placeholder="e.g. Table 12, VIP" autocomplete="off" />
+                <span asp-validation-for="CreateTable.Name" class="text-danger small"></span>
+            </div>
+            <div class="col-md-3 col-lg-2">
+                <label class="form-label small text-muted mb-1" asp-for="CreateTable.Capacity">Capacity</label>
+                <input asp-for="CreateTable.Capacity" class="form-control form-control-sm" type="number" min="1" max="500" />
+                <span asp-validation-for="CreateTable.Capacity" class="text-danger small"></span>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-sm btn-admin-primary">Create table</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card admin-card shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h5 fw-semibold mb-1">Unassigned households</h2>
+                <p class="small text-muted mb-3">Choose a table for each row. Declined RSVPs show 0 seats and cannot be assigned.</p>
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0 admin-table">
+                        <thead>
+                            <tr>
+                                <th>Household</th>
+                                <th class="text-center">Seats</th>
+                                <th>RSVP</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var g in Model.UnassignedGuests)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="fw-semibold small">@g.DisplayName</div>
+                                    <div class="text-muted small" style="max-width:14rem;">@g.BasisNote</div>
+                                </td>
+                                <td class="text-center"><span class="badge bg-light text-dark border rounded-pill">@g.Seats</span></td>
+                                <td>
+                                    @switch (g.RsvpLabel)
+                                    {
+                                        case "Approved":
+                                            <span class="badge rounded-pill badge-rsvp-approved">Approved</span>
+                                            break;
+                                        case "Declined":
+                                            <span class="badge rounded-pill badge-rsvp-declined">Declined</span>
+                                            break;
+                                        case "Pending":
+                                            <span class="badge rounded-pill badge-rsvp-pending">Pending</span>
+                                            break;
+                                        default:
+                                            <span class="badge rounded-pill bg-secondary">@g.RsvpLabel</span>
+                                            break;
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    @if (g.CanAssign && Model.Tables.Count > 0)
+                                    {
+                                        <form method="post" asp-page-handler="Assign" class="d-flex flex-column gap-1 align-items-stretch admin-seating-assign-form">
+                                            <input type="hidden" name="AssignGuestId" value="@g.GuestId" />
+                                            <select name="AssignTableId" class="form-select form-select-sm" required aria-label="Table for @g.DisplayName">
+                                                <option value="">Table…</option>
+                                                @foreach (var t in Model.Tables)
+                                                {
+                                                    <option value="@t.Id">@t.Name (@t.RemainingSeats free)</option>
+                                                }
+                                            </select>
+                                            <button type="submit" class="btn btn-sm btn-outline-primary">Assign</button>
+                                        </form>
+                                    }
+                                    else if (!g.CanAssign)
+                                    {
+                                        <span class="small text-muted">—</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="small text-muted">Add a table first</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        @if (!Model.UnassignedGuests.Any())
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4 small">Everyone listed is assigned.</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <h2 class="h5 fw-semibold mb-3">Tables</h2>
+        <div class="d-flex flex-column gap-3">
+            @foreach (var t in Model.Tables)
+            {
+                var pct = t.Capacity > 0 ? Math.Min(100, Math.Round(100d * t.UsedSeats / t.Capacity, 1)) : 0;
+                <div class="card admin-card shadow-sm admin-seating-table-card">
+                    <div class="card-body py-3">
+                        <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                            <div>
+                                <h3 class="h6 fw-semibold mb-0">@t.Name</h3>
+                                <div class="small text-muted mt-1">
+                                    <strong>@t.UsedSeats</strong> / @t.Capacity seats · <strong>@t.RemainingSeats</strong> free
+                                </div>
+                            </div>
+                            <div class="btn-group btn-group-sm">
+                                <button type="button"
+                                        class="btn btn-outline-secondary btn-edit-table"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editTableModal"
+                                        data-table-id="@t.Id"
+                                        data-table-name="@t.Name"
+                                        data-table-capacity="@t.Capacity">
+                                    Edit
+                                </button>
+                                <button type="button"
+                                        class="btn btn-outline-danger btn-remove-table"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#removeTableModal"
+                                        data-table-id="@t.Id"
+                                        data-table-name="@t.Name">
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                        <div class="progress admin-capacity-progress mb-3" style="height: 8px;">
+                            <div class="progress-bar bg-success" style="width: @(pct)%"></div>
+                        </div>
+                        @if (!t.AssignedGuests.Any())
+                        {
+                            <p class="small text-muted mb-0">No households assigned yet.</p>
+                        }
+                        else
+                        {
+                            <ul class="list-group list-group-flush border rounded small">
+                                @foreach (var row in t.AssignedGuests)
+                                {
+                                    <li class="list-group-item d-flex flex-wrap justify-content-between align-items-center gap-2 py-2">
+                                        <div>
+                                            <span class="fw-semibold">@row.DisplayName</span>
+                                            <span class="badge bg-light text-dark border ms-1 rounded-pill">@row.Seats seats</span>
+                                            <div class="text-muted small">@row.BasisNote</div>
+                                        </div>
+                                        <form method="post" asp-page-handler="Unassign" class="m-0">
+                                            <input type="hidden" name="UnassignAssignmentId" value="@row.AssignmentId" />
+                                            <button type="submit" class="btn btn-link btn-sm text-danger p-0">Unassign</button>
+                                        </form>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                </div>
+            }
+            @if (!Model.Tables.Any())
+            {
+                <div class="card admin-card shadow-sm">
+                    <div class="card-body text-muted small py-4 text-center">
+                        No tables yet — create one above to start seating guests.
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Edit table modal -->
+<div class="modal fade" id="editTableModal" tabindex="-1" aria-labelledby="editTableModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="UpdateTable">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-semibold" id="editTableModalLabel">Edit table</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" asp-for="EditTable.TableId" />
+                    <div class="mb-3">
+                        <label class="form-label" asp-for="EditTable.Name">Name</label>
+                        <input asp-for="EditTable.Name" class="form-control" autocomplete="off" />
+                        <span asp-validation-for="EditTable.Name" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label" asp-for="EditTable.Capacity">Capacity</label>
+                        <input asp-for="EditTable.Capacity" class="form-control" type="number" min="1" max="500" />
+                        <span asp-validation-for="EditTable.Capacity" class="text-danger small"></span>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-admin-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Remove table modal -->
+<div class="modal fade" id="removeTableModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="RemoveTable">
+                <input type="hidden" asp-for="RemoveTableId" />
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-semibold">Remove table</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0 small">Remove <strong id="removeTableNameLabel"></strong>? All households on this table become unassigned.</p>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Remove table</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            document.querySelectorAll('.btn-edit-table').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById('EditTable_TableId').value = btn.getAttribute('data-table-id');
+                    document.getElementById('EditTable_Name').value = btn.getAttribute('data-table-name') || '';
+                    document.getElementById('EditTable_Capacity').value = btn.getAttribute('data-table-capacity') || '8';
+                });
+            });
+            document.querySelectorAll('.btn-remove-table').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById('RemoveTableId').value = btn.getAttribute('data-table-id');
+                    document.getElementById('removeTableNameLabel').textContent = btn.getAttribute('data-table-name') || '';
+                });
+            });
+        })();
+    </script>
+}

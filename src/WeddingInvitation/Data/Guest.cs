@@ -9,4 +9,6 @@ public class Guest : EntityBase
 
     public ICollection<GuestFamilyMember> FamilyMembers { get; set; } = new List<GuestFamilyMember>();
     public Invitation? Invitation { get; set; }
+
+    public GuestTableAssignment? TableAssignment { get; set; }
 }

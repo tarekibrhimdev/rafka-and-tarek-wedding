@@ -28,25 +28,16 @@ public class IndexModel(WeddingDbContext db) : PageModel
     {
         TotalGuests = await db.Guests.AsNoTracking().CountAsync(cancellationToken);
 
-        InvitationsIssued = await db.Invitations
-            .AsNoTracking()
-            .CountAsync(cancellationToken);
+        InvitationsIssued = await db.Invitations.AsNoTracking().CountAsync(cancellationToken);
 
-        PendingRsvps = await db.Invitations
-            .AsNoTracking()
-            .CountAsync(i => i.RsvpStatus == RsvpStatus.Pending, cancellationToken);
+        PendingRsvps = await db.Invitations.AsNoTracking().CountAsync(i => i.RsvpStatus == RsvpStatus.Pending, cancellationToken);
 
-        SeatsInvited = await db.Invitations.AsNoTracking()
-            .SumAsync(i => i.MaxPersons, cancellationToken);
+        SeatsInvited = await db.Invitations.AsNoTracking().SumAsync(i => i.MaxPersons, cancellationToken);
 
-        ApprovedInvitations = await db.Invitations.AsNoTracking()
-            .CountAsync(i => i.RsvpStatus == RsvpStatus.Approved, cancellationToken);
+        ApprovedInvitations = await db.Invitations.AsNoTracking().CountAsync(i => i.RsvpStatus == RsvpStatus.Approved, cancellationToken);
 
-        DeclinedInvitations = await db.Invitations.AsNoTracking()
-            .CountAsync(i => i.RsvpStatus == RsvpStatus.Declined, cancellationToken);
+        DeclinedInvitations = await db.Invitations.AsNoTracking().CountAsync(i => i.RsvpStatus == RsvpStatus.Declined, cancellationToken);
 
-        ConfirmedAttending = await db.Invitations.AsNoTracking()
-            .Where(i => i.RsvpStatus == RsvpStatus.Approved)
-            .SumAsync(i => i.ComingCount ?? 0, cancellationToken);
+        ConfirmedAttending = await db.Invitations.AsNoTracking().Where(i => i.RsvpStatus == RsvpStatus.Approved).SumAsync(i => i.ComingCount ?? 0, cancellationToken);
     }
 }

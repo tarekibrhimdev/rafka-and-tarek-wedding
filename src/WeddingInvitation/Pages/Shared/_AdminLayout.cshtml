@@ -24,6 +24,7 @@
                     var pagePath = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
                     var isOverview = pagePath == "/Admin" || pagePath == "/Admin/Index";
                     var isGuests = pagePath.StartsWith("/Admin/Guests", StringComparison.Ordinal);
+                    var isSeating = pagePath.StartsWith("/Admin/Seating", StringComparison.Ordinal);
                 }
                 <a class="admin-nav-link @(isOverview ? "active" : null)"
                    asp-page="/Admin/Index">
@@ -32,6 +33,10 @@
                 <a class="admin-nav-link @(isGuests ? "active" : null)"
                    asp-page="/Admin/Guests/Index">
                     <span class="admin-nav-icon">◎</span> Guests
+                </a>
+                <a class="admin-nav-link @(isSeating ? "active" : null)"
+                   asp-page="/Admin/Seating/Index">
+                    <span class="admin-nav-icon">▦</span> Seating
                 </a>
             </nav>
             <div class="admin-sidebar-footer">

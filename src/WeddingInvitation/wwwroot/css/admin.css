@@ -286,3 +286,21 @@ html {
 .admin-guests-toolbar__hint strong {
     color: #0f172a;
 }
+
+.admin-capacity-strip .admin-capacity-progress {
+    height: 11px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.09);
+}
+
+.admin-capacity-strip .admin-capacity-progress .progress-bar {
+    border-radius: 999px;
+}
+
+.admin-seating-assign-form {
+    min-width: 10rem;
+}
+
+.admin-seating-table-card .list-group-item {
+    background: transparent;
+}
